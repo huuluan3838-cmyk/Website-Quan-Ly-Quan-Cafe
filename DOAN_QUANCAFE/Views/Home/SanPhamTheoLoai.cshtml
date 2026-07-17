@@ -1,0 +1,47 @@
+﻿@model IEnumerable<DOAN_QUANCAFE.tblSanPham>
+
+@{
+    ViewBag.Title = ViewBag.TieuDe;
+    Layout = "~/Views/Shared/_LayOutQCF.cshtml";
+}
+
+<div class="products">
+
+    <h2 class="mb-4" style="color: #6F4E37; border-bottom: 3px solid #FFD700; padding-bottom: 10px;">
+        @ViewBag.TieuDe <span style="font-size: 0.6em; color: #777;">(@Model.Count() sản phẩm)</span>
+    </h2>
+
+    @if (Model.Any())
+    {
+        <div class="product-grid">
+            @foreach (var item in Model)
+            {
+                <div class="product-card">
+                    <a href="@Url.Action("ChiTietSP", "TrangChu", new { masp = item.MaSP })">
+                        <div class="thumb">
+                            <img src="~/Content/Images/Products/@(item.HinhAnh)"
+                                 alt="@item.TenSP"
+                                 onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'" />
+                        </div>
+                        <div class="title">@item.TenSP</div>
+                        <div class="price">
+                            <span class="new-price">@String.Format("{0:N0}", item.GiaBan) đ</span>
+                            <span class="badge bg-light text-dark border">@item.KichThuoc</span>
+                        </div>
+                    </a>
+
+                    <button class="btn" onclick="location.href='@Url.Action("AddToCart", "GioHang", new { masp = item.MaSP })'">
+                        <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                    </button>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center">
+            Hiện chưa có sản phẩm nào thuộc danh mục này.
+        </div>
+    }
+
+</div>

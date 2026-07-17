@@ -1,0 +1,238 @@
+﻿@model DOAN_QUANCAFE.tblKhachHang
+@{
+    ViewBag.Title = "Hồ sơ khách hàng";
+    Layout = "~/Views/Shared/_LayOutAdmin.cshtml";
+}
+
+<style>
+    .ap-wrap { max-width: 1300px; }
+
+    .ap-hero{
+        background: linear-gradient(135deg, rgba(111,78,55,.12) 0%, rgba(255,215,0,.10) 100%);
+        border: 1px solid rgba(0,0,0,.10);
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    }
+    .ap-title{ margin:0; font-weight:900; letter-spacing:.3px; }
+    .btn-pill{
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-weight: 900;
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+    }
+
+    .ap-card{
+        background:#fff;
+        border:1px solid rgba(0,0,0,.10);
+        border-radius:18px;
+        overflow:hidden;
+        box-shadow:0 10px 30px rgba(0,0,0,.06);
+        height:100%;
+    }
+    .ap-card-hd{
+        padding:14px 16px;
+        border-bottom:1px solid rgba(0,0,0,.06);
+        background: rgba(248,249,250,.85);
+        backdrop-filter: blur(6px);
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        flex-wrap:wrap;
+    }
+    .ap-body{ padding:18px; }
+
+    .ap-avatar{
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 999px;
+        border: 6px solid rgba(255,255,255,.95);
+        box-shadow: 0 16px 30px rgba(0,0,0,.12);
+        background:#fff;
+    }
+    .ap-name{ margin:12px 0 0; font-weight:900; }
+    .ap-badge{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        border-radius:999px;
+        padding:8px 12px;
+        font-weight:900;
+        border:1px solid rgba(0,0,0,.10);
+        background:#fff;
+        color:#212529;
+        font-size:12px;
+    }
+
+    .ap-kv{
+        border:1px solid rgba(0,0,0,.06);
+        border-radius:14px;
+        padding:12px 12px;
+        background:#fff;
+    }
+    .ap-k{ font-size:12px; color:#6c757d; font-weight:800; margin-bottom:3px; }
+    .ap-v{ font-weight:800; color:#212529; }
+    .ap-v.muted{ font-weight:700; color:#495057; }
+
+    .ap-table thead th{
+        border:0;
+        font-weight:900;
+        letter-spacing:.2px;
+        background:#f7f7f7 !important;
+        padding:14px 12px;
+        white-space:nowrap;
+    }
+    .ap-table tbody td{ padding:14px 12px; vertical-align:middle; }
+    .ap-table tbody tr{ transition:all .15s ease; }
+    .ap-table tbody tr:hover{ background: rgba(111,78,55,.06); }
+
+    .badge-soft{
+        border-radius:999px;
+        padding:8px 12px;
+        font-weight:900;
+        border:1px solid rgba(0,0,0,.10);
+        font-size:12px;
+        white-space:nowrap;
+    }
+    .b-new{ background: rgba(255,193,7,.18); color:#8a5a00; }
+    .b-done{ background: rgba(25,135,84,.16); color:#0f5132; }
+    .b-other{ background: rgba(108,117,125,.14); color:#495057; }
+
+    .btn-view{
+        border-radius:12px;
+        padding:8px 12px;
+        font-weight:900;
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+    }
+
+    @@media (max-width: 992px){
+        .ap-avatar{ width:120px; height:120px; }
+    }
+</style>
+
+<div class="container-fluid ap-wrap mt-3 mb-4">
+    <div class="ap-hero mb-3">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <h2 class="ap-title text-primary">HỒ SƠ KHÁCH HÀNG</h2>
+            <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-pill">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <!-- Left: Profile -->
+        <div class="col-lg-4">
+            <div class="ap-card">
+                <div class="ap-card-hd">
+                    <div class="fw-bold text-dark"><i class="bi bi-person-badge me-2"></i>Thông tin</div>
+                    <span class="ap-badge"><i class="bi bi-star-fill"></i>Thành viên</span>
+                </div>
+
+                <div class="ap-body text-center">
+                    <img src="~/Content/Images/Avatar/@(Model.Avarta ?? "default-user.jpg")"
+                         class="ap-avatar"
+                         alt="@Model.TenKH"
+                         onerror="this.onerror=null;this.src='/Content/Images/avt/default-user.jpg';" />
+
+                    <h3 class="ap-name">@Model.TenKH</h3>
+
+                    <div class="mt-3 text-start">
+                        <div class="ap-kv mb-2">
+                            <div class="ap-k">Điện thoại</div>
+                            <div class="ap-v">@Model.DienThoai</div>
+                        </div>
+
+                        <div class="ap-kv mb-2">
+                            <div class="ap-k">Email</div>
+                            <div class="ap-v muted">@((Model.Email ?? "Chưa có"))</div>
+                        </div>
+
+                        <div class="ap-kv mb-2">
+                            <div class="ap-k">Địa chỉ</div>
+                            <div class="ap-v muted">@((Model.DiaChi ?? "Chưa có"))</div>
+                        </div>
+
+                        <div class="ap-kv">
+                            <div class="ap-k">Thông tin thêm</div>
+                            <div class="ap-v muted">
+                                @((Model.GioiTinh ?? "Chưa có")) - Sinh năm @((Model.NamSinh.HasValue ? Model.NamSinh.ToString() : "Chưa có"))
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-3">
+                        <a href="@Url.Action("Edit", new { id = Model.MaKH })" class="btn btn-warning btn-pill text-dark">
+                            <i class="bi bi-pencil-square"></i> Chỉnh sửa hồ sơ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Orders -->
+        <div class="col-lg-8">
+            <div class="ap-card">
+                <div class="ap-card-hd">
+                    <div class="fw-bold text-dark"><i class="bi bi-receipt me-2"></i>Lịch sử đơn hàng</div>
+                    <div class="text-muted fw-semibold">
+                        @(Model.tblHoaDons == null ? 0 : Model.tblHoaDons.Count) đơn
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 ap-table">
+                        <thead>
+                            <tr>
+                                <th class="ps-4" style="width:110px;">Mã đơn</th>
+                                <th style="width:140px;">Ngày đặt</th>
+                                <th style="width:140px;">Tổng tiền</th>
+                                <th style="width:140px;">Trạng thái</th>
+                                <th style="width:120px;">Chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.tblHoaDons != null && Model.tblHoaDons.Count > 0)
+                            {
+                                foreach (var hd in Model.tblHoaDons.OrderByDescending(x => x.NgayLap))
+                                {
+                                    var stText = "Khác";
+                                    var stClass = "b-other";
+                                    if (hd.TinhTrang == 1) { stText = "Mới"; stClass = "b-new"; }
+                                    else if (hd.TinhTrang == 2) { stText = "Hoàn tất"; stClass = "b-done"; }
+
+                                    <tr>
+                                        <td class="ps-4 fw-bold">#@hd.MaHD</td>
+                                        <td>@String.Format("{0:dd/MM/yyyy}", hd.NgayLap)</td>
+                                        <td class="text-danger fw-bold">@String.Format("{0:N0}", hd.TongTien) đ</td>
+                                        <td><span class="badge-soft @stClass">@stText</span></td>
+                                        <td>
+                                            <a href="@Url.Action("Details", "DonHangs", new { id = hd.MaHD })"
+                                               class="btn btn-sm btn-outline-primary btn-view">
+                                                <i class="bi bi-eye"></i> Xem
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center py-5 text-muted fw-semibold">
+                                        Khách hàng này chưa có đơn hàng nào.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

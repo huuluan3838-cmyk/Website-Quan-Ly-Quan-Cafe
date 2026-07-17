@@ -1,0 +1,213 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayOutHome.cshtml";
+}
+<style>
+    /* ==================================== */
+    /* 1. ĐIỀU CHỈNH CHUNG TRANG GIỚI THIỆU */
+    /* ==================================== */
+    .site-main {
+        display: block;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    /* ============================ */
+    /* 2. INTRO BANNER (BANNER GIỚI THIỆU) */
+    /* ============================ */
+
+    .intro-banner {
+        background-color: #F8F4EA;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 3rem;
+        min-height: 400px;
+    }
+
+    .intro-container {
+        display: flex;
+        align-items: stretch;
+        min-height: 400px;
+    }
+
+    .intro-text {
+        padding: 3rem;
+        flex: 1;
+        background-color: var(--light);
+    }
+
+        .intro-text h2 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .intro-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+    .intro-image {
+        flex: 1.2;
+        overflow: hidden;
+    }
+
+        .intro-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+    /* ============================ */
+    /* 3. SECTION CHUNG */
+    /* ============================ */
+
+    .section-title {
+        text-align: center;
+        color: var(--dark);
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 4px solid var(--primary);
+        display: inline-block;
+        width: 100%;
+    }
+
+    /* ============================ */
+    /* 4. QUY TRÌNH & BƯỚC THỰC HIỆN */
+    /* ============================ */
+
+    .process-steps {
+        display: flex;
+        justify-content: space-around;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+
+    .step-card {
+        flex: 1;
+        min-width: 250px;
+        background: var(--light);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        text-align: center;
+        transition: transform 0.3s;
+    }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .step-card .icon {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .step-card h4 {
+            color: var(--dark);
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+    .intro-container {
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .intro-text {
+        order: 2;
+        padding: 2rem;
+        min-height: auto;
+    }
+
+    .intro-image {
+        order: 1;
+        width: 100%;
+        max-height: 250px;
+        overflow: hidden;
+    }
+
+        .intro-image img {
+            height: 100%;
+            width: 100%;
+        }
+</style>
+
+<div class="intro-banner">
+    <div class="intro-container">
+
+        <div class="intro-text">
+            <h2>☕ Hương Vị Tạo Nên Đẳng Cấp</h2>
+            <p>CafeHouse tự hào mang đến những ly cà phê được chọn lọc từ những hạt **Arabica** và **Robusta** thượng hạng, thu hoạch từ những vùng nguyên liệu nổi tiếng.</p>
+            <p>Từng mẻ cà phê được rang xay theo tiêu chuẩn châu Âu, đảm bảo giữ trọn hương thơm tự nhiên và vị đậm đà đặc trưng. Với quy trình pha chế chuyên nghiệp từ đội ngũ barista giàu kinh nghiệm, CafeHouse mang đến cho bạn không chỉ một tách cà phê, mà là một trải nghiệm tinh tế – nơi hương vị, cảm xúc và sự thư giãn hòa quyện trong từng khoảnh khắc.</p>
+        </div>
+
+        <div class="intro-image">
+            <img src="~/Content/Images/Banner/banner.jpeg"
+                 alt="Hương vị tạo nên đẳng cấp" />
+        </div>
+    </div>
+</div>
+
+<section class="about-section">
+    <h2 class="section-title">✨ Hành Trình Của CafeHouse</h2>
+    <div class="row g-4">
+        <div class="col-md-6">
+            <h3>Khởi Nguồn Đam Mê</h3>
+            <p>CafeHouse ra đời từ năm 2010 với khát vọng tạo ra một không gian nơi mọi người có thể tìm thấy sự bình yên và một ly cà phê hoàn hảo. Chúng tôi tin rằng, cà phê không chỉ là thức uống, mà còn là văn hóa, là nhịp đập của cuộc sống hiện đại.</p>
+            <p>Chúng tôi luôn nỗ lực tìm kiếm và hợp tác với các nông trại cà phê bền vững, đảm bảo chất lượng hạt cà phê tốt nhất và góp phần bảo vệ môi trường, hỗ trợ cộng đồng nông dân.</p>
+        </div>
+        <div class="col-md-6">
+            <h3>Triết Lý Phục Vụ</h3>
+            <p>Triết lý của chúng tôi xoay quanh 3 yếu tố cốt lõi: **Chất lượng** (nguyên liệu thượng hạng), **Nghệ thuật** (kỹ thuật pha chế tinh xảo) và **Trải nghiệm** (không gian ấm cúng và dịch vụ tận tâm).</p>
+            <p>Mỗi nhân viên tại CafeHouse đều được đào tạo để trở thành một người kể chuyện, sẵn sàng chia sẻ về nguồn gốc và câu chuyện đằng sau mỗi ly cà phê mà bạn thưởng thức.</p>
+        </div>
+    </div>
+</section>
+
+<section class="about-section">
+    <h2 class="section-title">🌿 Quy Trình Tạo Nên Hương Vị Độc Đáo</h2>
+    <div class="process-steps">
+
+        <div class="step-card">
+            <div class="icon">🌰</div>
+            <h4>1. Thu Hoạch Chọn Lọc</h4>
+            <p>Chỉ hái những quả cà phê chín mọng nhất bằng tay, đảm bảo độ ngọt và hương vị tối ưu.</p>
+
+
+            [Image of coffee harvesting process]
+
+        </div>
+
+        <div class="step-card">
+            <div class="icon">🔥</div>
+            <h4>2. Rang Xay Tiêu Chuẩn</h4>
+            <p>Quy trình rang được kiểm soát chặt chẽ bằng máy móc hiện đại theo công thức độc quyền của CafeHouse.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="icon">💧</div>
+            <h4>3. Pha Chế Tinh Tế</h4>
+            <p>Barista chuyên nghiệp sử dụng kỹ thuật Espresso hiện đại và các phương pháp thủ công như Pour-over.</p>
+
+        </div>
+
+        <div class="step-card">
+            <div class="icon">☕</div>
+            <h4>4. Trải Nghiệm Hoàn Hảo</h4>
+            <p>Ly cà phê được phục vụ nhanh chóng trong không gian thoải mái, giúp bạn tận hưởng trọn vẹn.</p>
+        </div>
+    </div>
+</section>

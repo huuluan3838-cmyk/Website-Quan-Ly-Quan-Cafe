@@ -1,0 +1,281 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title - Quản trị Cafe House</title>
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script src="~/Content/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        /* HEADER */
+        .site-header {
+            background: linear-gradient(135deg, #6B4423 0%, #8B5A3C 100%);
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header-inner {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+        }
+
+            .logo span {
+                color: #FFD700;
+            }
+
+        /* SITE MAIN layout grid */
+        .site-main {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            margin: 2rem auto;
+            max-width: 1600px;
+            padding: 0 2rem;
+        }
+
+        /* SIDEBAR */
+        .admin-sidebar {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+            .admin-sidebar h3 {
+                color: #6B4423;
+                margin-bottom: 1rem;
+                border-bottom: 2px solid #FFD700;
+                padding-bottom: 0.5rem;
+                font-size: 1.2rem;
+            }
+
+        .admin-nav-list {
+            list-style: none;
+            padding: 0;
+        }
+
+            .admin-nav-list li {
+                margin-bottom: 0.5rem;
+            }
+
+            .admin-nav-list a {
+                color: #333;
+                text-decoration: none;
+                display: block;
+                padding: 0.75rem;
+                border-radius: 4px;
+                transition: 0.3s;
+            }
+
+                .admin-nav-list a:hover, .admin-nav-list a.active {
+                    background: #FFD700;
+                    color: #6B4423;
+                    padding-left: 1rem;
+                    font-weight: bold;
+                }
+
+        /* ADMIN CONTENT */
+        .admin-content {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-height: 500px;
+        }
+
+            .admin-content h2 {
+                color: #6B4423;
+                margin-bottom: 1.5rem;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+            }
+
+        /* FOOTER MỚI */
+        .site-footer {
+            background: linear-gradient(135deg, #6B4423 0%, #8B5A3C 100%);
+            color: #fff;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid; /* Chia cột */
+            grid-template-columns: 1fr 1fr; /* 2 cột bằng nhau */
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .footer-info h4 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .footer-info p {
+            margin: 0.8rem 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-info i {
+            color: var(--accent);
+            width: 25px;
+        }
+
+        .footer-map {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 2px solid var(--accent); /* Viền vàng cho nổi */
+        }
+
+            .footer-map iframe {
+                width: 100%;
+                height: 250px; /* Chiều cao bản đồ */
+                border: 0;
+                display: block;
+            }
+
+        .copy {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Table styles override */
+        .table th {
+            background-color: #f8f9fa;
+            color: #6B4423;
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="@Url.Action("Index", "Admin")" class="logo">Cafe<span>House</span></a>
+            <div style="color:white;">Xin chào, Quản trị viên</div>
+            <a href="@Url.Action("LogOff", "Account")" class="btn btn-sm btn-danger">Đăng xuất</a>
+        </div>
+    </header>
+
+    <main class="site-main">
+
+        <div class="admin-sidebar">
+            <h3>Danh mục Quản lý</h3>
+            <ul class="admin-nav-list">
+                <li>
+                    <a href="@Url.Action("Index", "Admin")" class="@(ViewContext.RouteData.Values["controller"].ToString() == "Admin" ? "active" : "")">
+                        📊 Thống kê chung
+                    </a>
+                </li>
+
+                <li>
+                    <a href="@Url.Action("Index", "SanPhams")" class="@(ViewContext.RouteData.Values["controller"].ToString() == "SanPhams" ? "active" : "")">
+                        ☕ Quản lý Sản phẩm
+                    </a>
+                </li>
+
+                @*<li>
+                    <a href="@Url.Action("Index", "LoaiSanPhams")" class="@(ViewContext.RouteData.Values["controller"].ToString() == "LoaiSanPhams" ? "active" : "")">
+                        📂 Loại sản phẩm
+                    </a>
+                </li>*@
+
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Index", "LoaiAPI")">
+                       📂 Loại sản phẩm (API)
+                    </a>
+                </li>
+
+                <li>
+                    <a href="@Url.Action("Index", "DonHangs")" class="@(ViewContext.RouteData.Values["controller"].ToString() == "DonHangs" ? "active" : "")">
+                        🧾 Quản lý Đơn hàng
+                    </a>
+                </li>
+
+                <li>
+                    <a href="@Url.Action("Index", "KhachHangs")" class="@(ViewContext.RouteData.Values["controller"].ToString() == "KhachHangs" ? "active" : "")">
+                        👥 Quản lý Khách hàng
+                    </a>
+                </li>
+
+                <li>
+                    <a href="@Url.Action("Index", "LienHeAdmin")"
+                       class="@(ViewContext.RouteData.Values["controller"].ToString() == "LienHeAdmin" ? "active" : "")">
+                        📬 Quản lý Liên hệ
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="admin-content">
+            @RenderBody()
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+
+            <div class="footer-info">
+                <h4>CafeHouse</h4>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Nguyễn Huệ, Quận 1, TP. HCM</p>
+                <p><i class="fas fa-phone-alt"></i> 0909 123 456</p>
+                <p><i class="fas fa-envelope"></i> contact@cafehouse.vn</p>
+                <p><i class="fas fa-clock"></i> 07:00 - 22:00 (Hàng ngày)</p>
+            </div>
+
+            <div class="footer-map">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3295.5129850040457!2d106.6278853048064!3d10.807674841320111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752be27d8b4f4d%3A0x92dcba2950430867!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBDw7RuZyBUaMawxqFuZyBUUC4gSOG7kyBDaMOtIE1pbmggKEhVSVQp!5e0!3m2!1svi!2s!4v1765808712886!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+
+        </div>
+
+        <div class="copy">
+            <p>&copy; 2025 CafeHouse - Hệ thống quản lý quán Cafe chuyên nghiệp.</p>
+        </div>
+    </footer>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+    @* Thêm dòng này vào *@
+    @RenderSection("scripts", required: false)
+</body>
+</html>

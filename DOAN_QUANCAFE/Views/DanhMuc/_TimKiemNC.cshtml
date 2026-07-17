@@ -1,0 +1,61 @@
+﻿@using DOAN_QUANCAFE.Models
+@model List<DOAN_QUANCAFE.tblLoaiSanPham>
+
+<form action="@Url.Action("TimKiemNC", "Home")" method="get" class="sidebar-form">
+
+    <div class="form-group mb-3">
+        <label for="ten" class="form-label fw-bold">Tên sản phẩm</label>
+        <input type="text" class="form-control" name="sTenSP" id="ten" placeholder="Nhập tên đồ uống">
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="kw" class="form-label fw-bold">Từ khóa</label>
+        <input type="text" class="form-control" name="sTuKhoa" id="kw" placeholder="Mô tả, ghi chú...">
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="chude" class="form-label fw-bold">Loại đồ uống</label>
+        <select name="iMaLoai" id="chude" class="form-select">
+            <option value="">-- Tất cả --</option>
+            @foreach (var item in Model)
+            {
+                <option value="@item.MaLoai">@item.TenLoai</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label fw-bold">Mức giá</label>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="sMucGia" id="g0" value="" checked>
+            <label class="form-check-label" for="g0">Tất cả mức giá</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="sMucGia" id="g1" value="1">
+            <label class="form-check-label" for="g1">0 – 40.000 VNĐ</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="sMucGia" id="g2" value="2">
+            <label class="form-check-label" for="g2">41.000 – 60.000 VNĐ</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="sMucGia" id="g3" value="3">
+            <label class="form-check-label" for="g3">61.000 – 80.000 VNĐ</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="sMucGia" id="g4" value="4">
+            <label class="form-check-label" for="g4">Lớn hơn 80.000 VNĐ</label>
+        </div>
+    </div>
+
+    <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary w-100 mb-2">Tìm kiếm</button>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-danger w-100">Xóa bộ lọc</a>
+    </div>
+
+</form>

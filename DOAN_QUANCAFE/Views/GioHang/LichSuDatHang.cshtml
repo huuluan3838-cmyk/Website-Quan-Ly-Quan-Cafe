@@ -1,0 +1,252 @@
+﻿@model List<DOAN_QUANCAFE.tblHoaDon>
+@{
+    ViewBag.Title = "Lịch sử đặt hàng";
+    Layout = "~/Views/Shared/_LayOutHome.cshtml";
+}
+
+<style>
+    .oh-wrap { max-width: 1200px; }
+    .oh-header {
+        background: linear-gradient(135deg, rgba(111,78,55,.12) 0%, rgba(255,215,0,.10) 100%);
+        border: 1px solid rgba(0,0,0,.08);
+        border-radius: 18px;
+        padding: 18px 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    }
+    .oh-title { font-weight: 800; letter-spacing: .5px; margin: 0; }
+    .oh-sub { margin: 6px 0 0; color: #6c757d; }
+    .oh-card {
+        background: #fff;
+        border: 1px solid rgba(0,0,0,.08);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    }
+    .oh-tools {
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(0,0,0,.06);
+        background: rgba(248,249,250,.8);
+        backdrop-filter: blur(6px);
+    }
+    .oh-search .form-control {
+        border-radius: 12px;
+        padding-left: 42px;
+    }
+    .oh-search .icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        font-size: 14px;
+    }
+    .oh-table { margin: 0; }
+    .oh-table thead th {
+        border: 0;
+        font-weight: 700;
+        letter-spacing: .3px;
+        background: #2c2f33 !important;
+        color: #fff !important;
+        padding: 14px 12px;
+        white-space: nowrap;
+    }
+    .oh-table tbody td {
+        padding: 14px 12px;
+        vertical-align: middle;
+    }
+    .oh-table tbody tr { transition: all .15s ease; }
+    .oh-table tbody tr:hover { background: rgba(111,78,55,.06); }
+    .oh-muted { color: #6c757d; }
+    .badge-soft {
+        border-radius: 999px;
+        padding: 8px 10px;
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: .2px;
+        border: 1px solid rgba(0,0,0,.08);
+        white-space: nowrap;
+    }
+    .b-wait { background: rgba(255,193,7,.18); color: #8a5a00; }
+    .b-done { background: rgba(25,135,84,.16); color: #0f5132; }
+    .b-cancel { background: rgba(220,53,69,.14); color: #842029; }
+    .b-unk { background: rgba(108,117,125,.14); color: #495057; }
+    .b-paid { background: rgba(13,110,253,.14); color: #0a58ca; }
+    .b-unpaid { background: rgba(33,37,41,.10); color: #212529; }
+
+    .btn-view {
+        border-radius: 12px;
+        padding: 8px 12px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .oh-empty {
+        border: 1px dashed rgba(0,0,0,.18);
+        border-radius: 18px;
+        background: rgba(248,249,250,.7);
+        padding: 26px;
+    }
+    .oh-empty .big { font-weight: 800; margin: 0; }
+    .oh-empty .small { margin: 6px 0 0; color: #6c757d; }
+
+    @@media (max-width: 768px) {
+        .oh-hide-md { display: none !important; }
+        .oh-tools { gap: 10px; }
+        .oh-table thead th { padding: 12px 10px; }
+        .oh-table tbody td { padding: 12px 10px; }
+    }
+</style>
+
+<section class="container mt-4 mb-5 oh-wrap">
+    <div class="oh-header mb-3">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <div>
+                <h2 class="oh-title text-primary">LỊCH SỬ ĐẶT HÀNG</h2>
+                <p class="oh-sub">
+                    Tổng số đơn:
+                    <strong>@(Model == null ? 0 : Model.Count)</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="oh-empty">
+            <p class="big">Bạn chưa có đơn hàng nào</p>
+            <p class="small">Khi phát sinh đơn hàng, thông tin sẽ hiển thị tại đây.</p>
+        </div>
+    }
+    else
+    {
+        <div class="oh-card">
+            <div class="oh-tools d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="position-relative oh-search" style="min-width: 260px; flex: 1;">
+                    <span class="icon"><i class="fas fa-search"></i></span>
+                    <input id="orderSearch" type="text" class="form-control"
+                           placeholder="Tìm theo mã đơn, địa chỉ, trạng thái..." />
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <select id="statusFilter" class="form-select" style="border-radius: 12px; min-width: 180px;">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="Chờ xử lý">Chờ xử lý</option>
+                        <option value="Đã giao hàng">Đã giao hàng</option>
+                        <option value="Đã hủy">Đã hủy</option>
+                        <option value="Không rõ">Không rõ</option>
+                    </select>
+
+                    <select id="payFilter" class="form-select" style="border-radius: 12px; min-width: 170px;">
+                        <option value="">Tất cả thanh toán</option>
+                        <option value="Đã thanh toán">Đã thanh toán</option>
+                        <option value="Chưa thanh toán">Chưa thanh toán</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover oh-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 90px;">Mã đơn</th>
+                            <th class="oh-hide-md" style="width: 170px;">Ngày đặt</th>
+                            <th>Địa chỉ giao</th>
+                            <th style="width: 140px;">Tổng tiền</th>
+                            <th style="width: 140px;">Trạng thái</th>
+                            <th style="width: 150px;">Thanh toán</th>
+                            <th style="width: 110px;">Chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderRows">
+                        @foreach (var item in Model)
+                        {
+                            var trangThai = "Không rõ";
+                            if (item.TinhTrang == 1) { trangThai = "Chờ xử lý"; }
+                            else if (item.TinhTrang == 2) { trangThai = "Đã giao hàng"; }
+                            else if (item.TinhTrang == 3) { trangThai = "Đã hủy"; }
+
+                            var badgeStatus = "b-unk";
+                            if (trangThai == "Chờ xử lý") { badgeStatus = "b-wait"; }
+                            else if (trangThai == "Đã giao hàng") { badgeStatus = "b-done"; }
+                            else if (trangThai == "Đã hủy") { badgeStatus = "b-cancel"; }
+
+                            var payText = (item.DaThanhToan == true ? "Đã thanh toán" : "Chưa thanh toán");
+                            var payBadge = (item.DaThanhToan == true ? "b-paid" : "b-unpaid");
+                            <tr>
+                                <td class="fw-bold">#@item.MaHD</td>
+                                <td class="oh-hide-md">
+                                    @(item.NgayLap.HasValue ? item.NgayLap.Value.ToString("dd/MM/yyyy HH:mm") : "")
+                                </td>
+                                <td class="oh-muted">@item.DiaChiGiaoHang</td>
+                                <td class="fw-bold text-danger">
+                                    @String.Format("{0:#,##0} đ", item.TongTien)
+                                </td>
+                                <td>
+                                    <span class="badge-soft @badgeStatus">@trangThai</span>
+                                </td>
+                                <td>
+                                    <span class="badge-soft @payBadge">@payText</span>
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("ChiTietDonHang", "GioHang", new { id = item.MaHD })"
+                                       class="btn btn-sm btn-outline-primary btn-view">
+                                        <i class="fas fa-eye"></i> Xem
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="noResult" class="p-4 text-center oh-muted" style="display:none;">
+                Không có đơn hàng phù hợp bộ lọc.
+            </div>
+        </div>
+
+        <script>
+            (function () {
+                const search = document.getElementById('orderSearch');
+                const statusFilter = document.getElementById('statusFilter');
+                const payFilter = document.getElementById('payFilter');
+                const tbody = document.getElementById('orderRows');
+                const noResult = document.getElementById('noResult');
+
+                function normalize(s) {
+                    return (s || '').toString().toLowerCase().trim();
+                }
+
+                function applyFilter() {
+                    const q = normalize(search.value);
+                    const st = normalize(statusFilter.value);
+                    const pay = normalize(payFilter.value);
+
+                    const rows = Array.from(tbody.querySelectorAll('tr'));
+                    let visible = 0;
+
+                    rows.forEach(r => {
+                        const text = normalize(r.innerText);
+
+                        const statusText = normalize(r.children[4]?.innerText);
+                        const payText = normalize(r.children[5]?.innerText);
+
+                        const okQ = !q || text.includes(q);
+                        const okSt = !st || statusText.includes(st);
+                        const okPay = !pay || payText.includes(pay);
+
+                        const show = okQ && okSt && okPay;
+                        r.style.display = show ? '' : 'none';
+                        if (show) visible++;
+                    });
+
+                    noResult.style.display = visible === 0 ? '' : 'none';
+                }
+
+                search.addEventListener('input', applyFilter);
+                statusFilter.addEventListener('change', applyFilter);
+                payFilter.addEventListener('change', applyFilter);
+            })();
+        </script>
+    }
+</section>

@@ -1,0 +1,115 @@
+﻿@model IEnumerable<DOAN_QUANCAFE.tblHoaDon>
+
+@{
+    ViewBag.Title = "Quản lý đơn hàng";
+    Layout = "~/Views/Shared/_LayOutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="text-primary fw-bold">Quản lý Đơn Hàng</h2>
+            <p class="text-muted">Theo dõi và xử lý đơn hàng của khách.</p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-secondary">
+                        <tr>
+                            <th class="ps-4">Mã HĐ</th>
+                            <th>Khách hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Thanh toán</th>
+                            <th class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.OrderByDescending(x => x.NgayLap))
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold text-muted">#@item.MaHD</td>
+
+                                <td>
+                                    <div class="fw-bold text-dark">
+                                        @(item.tblKhachHang != null ? item.tblKhachHang.TenKH : "Khách vãng lai")
+                                    </div>
+                                    <small class="text-muted">
+                                        @(item.tblKhachHang != null ? item.tblKhachHang.DienThoai : "")
+                                    </small>
+                                </td>
+
+                                <td>
+                                    @String.Format("{0:dd/MM/yyyy HH:mm}", item.NgayLap)
+                                </td>
+
+                                <td class="fw-bold text-danger">
+                                    @String.Format("{0:N0}", item.TongTien) đ
+                                </td>
+
+                                <td>
+                                    @if (item.tblTinhTrang != null)
+                                    {
+                                        string badgeClass = "bg-secondary";
+                                        // Logic màu sắc cơ bản: 1: Mới, 2: Đã giao, 3: Hủy (Tùy ID trong DB của bạn)
+                                        if (item.TinhTrang == 1) { badgeClass = "bg-warning text-dark"; } // Chờ xử lý
+                                        else if (item.TinhTrang == 2) { badgeClass = "bg-success"; } // Đã giao
+                                        else if (item.TinhTrang == 3) { badgeClass = "bg-danger"; } // Đã hủy
+
+                                        <span class="badge @badgeClass bg-opacity-75">
+                                            @item.tblTinhTrang.TinhTrangHoaDon
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (item.DaThanhToan == true)
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success">
+                                            <i class="bi bi-check-circle-fill"></i> Đã TT
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">
+                                            <i class="bi bi-x-circle-fill"></i> Chưa TT
+                                        </span>
+                                    }
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a href="@Url.Action("Edit", new { id = item.MaHD })" class="btn btn-sm btn-outline-warning" title="Cập nhật">
+                                            ✏️
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        <a href="@Url.Action("Details", new { id = item.MaHD })" class="btn btn-sm btn-outline-info" title="Chi tiết">
+                                            👁️
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
+
+                                        @if (item.TinhTrang != 3)
+                                        {
+                                            <a href="@Url.Action("HuyDon", "DonHangs", new { id = item.MaHD })"
+                                               class="btn btn-sm btn-outline-danger"
+                                               title="Hủy đơn hàng này"
+                                               onclick="return confirm('CẢNH BÁO: Bạn có chắc muốn hủy đơn này? Doanh thu sẽ bị trừ đi.');">
+                                                🗑️
+                                                <i class="bi bi-trash-fill"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

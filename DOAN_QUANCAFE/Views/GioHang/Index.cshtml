@@ -1,0 +1,305 @@
+﻿@model List<DOAN_QUANCAFE.Models.GioHangItem>
+
+@{
+    ViewBag.Title = "Giỏ hàng";
+    Layout = "~/Views/Shared/_LayOutHome.cshtml";
+
+    bool isEmpty = (Model == null || !Model.Any());
+    decimal subTotal = (!isEmpty) ? Model.Sum(x => x.ThanhTien) : 0m;
+}
+
+<style>
+    .cart-wrap {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        padding: 2rem;
+    }
+
+    .cart-title {
+        color: var(--primary);
+        font-weight: 800;
+        border-bottom: 3px solid var(--accent);
+        padding-bottom: .75rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+    }
+
+    .cart-table thead th {
+        background: var(--dark) !important;
+        color: #fff !important;
+        border-color: rgba(255,255,255,0.12) !important;
+        white-space: nowrap;
+    }
+
+    .cart-table td, .cart-table th {
+        vertical-align: middle !important;
+    }
+
+    .cart-thumb {
+        width: 74px;
+        height: 74px;
+        border-radius: 14px;
+        object-fit: cover;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+        border: 2px solid rgba(255,215,0,0.35);
+        background: #fff;
+    }
+
+    .price-text {
+        color: var(--primary);
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .muted {
+        color: #6c757d;
+        font-size: .95rem;
+    }
+
+    .qty-group {
+        width: 170px;
+        margin: 0 auto;
+    }
+
+    .qty-btn {
+        border: 1px solid rgba(111,78,55,0.25);
+        background: #fff;
+        color: var(--dark);
+        font-weight: 900;
+        border-radius: 10px;
+        width: 44px;
+        transition: all .2s;
+    }
+
+        .qty-btn:hover {
+            background: rgba(255,215,0,0.2);
+            transform: translateY(-1px);
+        }
+
+    .qty-input {
+        text-align: center;
+        border: 2px solid var(--accent);
+        border-radius: 10px;
+        font-weight: 700;
+        padding: .45rem .5rem;
+    }
+
+    .cart-summary {
+        margin-top: 1.5rem;
+        background: linear-gradient(135deg, rgba(111,78,55,0.10), rgba(255,215,0,0.12));
+        border: 1px solid rgba(255,215,0,0.45);
+        border-radius: 16px;
+        padding: 1.2rem 1.4rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .summary-total {
+        font-size: 1.35rem;
+        font-weight: 900;
+        color: #dc3545;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    .summary-actions {
+        display: flex;
+        gap: .6rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-coffee {
+        background: var(--primary);
+        border: none;
+        color: #fff;
+        font-weight: 700;
+        border-radius: 12px;
+        padding: .75rem 1.1rem;
+        transition: all .2s;
+    }
+
+        .btn-coffee:hover {
+            background: var(--hover); /* nền hover vẫn giữ màu hover */
+            color: #fff; /* chữ luôn trắng khi hover */
+            transform: translateY(-2px);
+        }
+
+    .btn-outline-coffee {
+        border: 2px solid var(--accent);
+        background: #fff;
+        color: var(--dark);
+        font-weight: 800;
+        border-radius: 12px;
+        padding: .7rem 1.05rem;
+        transition: all .2s;
+    }
+
+        .btn-outline-coffee:hover {
+            background: var(--accent); /* nền đổi sang accent khi hover */
+            color: #fff; /* chữ đổi trắng khi hover */
+            transform: translateY(-2px);
+        }
+
+</style>
+
+<div class="cart-wrap">
+    <h2 class="cart-title">
+        <i class="fas fa-shopping-cart"></i> Giỏ hàng của bạn
+    </h2>
+
+    @if (isEmpty)
+    {
+        <div class="alert alert-warning mb-3">
+            Giỏ hàng của bạn đang trống.
+        </div>
+        <a href="@Url.Action("Index", "TrangChu")" class="btn btn-outline-coffee">
+            <i class="fas fa-arrow-left me-1"></i> Quay lại mua sắm
+        </a>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle text-center cart-table">
+                <thead>
+                    <tr>
+                        <th style="width:110px;">Ảnh</th>
+                        <th class="text-start">Sản phẩm</th>
+                        <th style="width:150px;">Giá</th>
+                        <th style="width:220px;">Số lượng</th>
+                        <th style="width:170px;">Thành tiền</th>
+                        <th style="width:90px;">Xóa</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <img class="cart-thumb"
+                                     src="~/Content/Images/Products/@item.HinhAnh"
+                                     alt="@item.TenSP" />
+                            </td>
+
+                            <td class="text-start">
+                                <div class="fw-bold">@item.TenSP</div>
+                                <div class="muted">Mã: @item.MaSP</div>
+                            </td>
+
+                            <td class="price-text">
+                                @String.Format("{0:#,##0}", item.GiaBan) VNĐ
+                            </td>
+
+                            <td>
+                                @using (Html.BeginForm("UpdateQuantity", "GioHang", FormMethod.Post, new { @class = "qty-form d-flex justify-content-center" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@item.MaSP" />
+
+                                    <div class="input-group qty-group">
+                                        <button type="button"
+                                                class="btn qty-btn js-qty"
+                                                data-delta="-1"
+                                                aria-label="Giảm số lượng">
+                                            -
+                                        </button>
+
+                                        <input type="text"
+                                               name="quantity"
+                                               class="form-control qty-input js-qty-input"
+                                               value="@item.SoLuong"
+                                               min="1"
+                                               step="1"
+                                               inputmode="numeric" />
+
+                                        <button type="button"
+                                                class="btn qty-btn js-qty"
+                                                data-delta="1"
+                                                aria-label="Tăng số lượng">
+                                            +
+                                        </button>
+
+                                        <button type="submit" class="d-none js-submit">Update</button>
+                                    </div>
+                                }
+                            </td>
+
+                            <td class="fw-bold">
+                                @String.Format("{0:#,##0}", item.ThanhTien) VNĐ
+                            </td>
+
+                            <td>
+                                <a href="@Url.Action("Remove", "GioHang", new { id = item.MaSP })"
+                                   class="btn btn-danger btn-sm"
+                                   title="Xóa sản phẩm">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cart-summary">
+            <p class="summary-total">
+                Tổng cộng: @String.Format("{0:#,##0}", subTotal) VNĐ
+            </p>
+
+            <div class="summary-actions">
+                <a href="@Url.Action("Index", "TrangChu")" class="btn btn-outline-coffee">
+                    <i class="fas fa-arrow-left me-1"></i> Mua thêm
+                </a>
+
+                <a href="@Url.Action("DatHang", "GioHang")" class="btn btn-coffee">
+                    <i class="fas fa-credit-card me-1"></i> Tiến hành thanh toán
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script>
+        (function () {
+            function clampMin1(v) {
+                v = parseInt(v, 10);
+                if (isNaN(v) || v < 1) return 1;
+                return v;
+            }
+
+            document.querySelectorAll(".qty-form").forEach(function (form) {
+                var input = form.querySelector(".js-qty-input");
+                var submitBtn = form.querySelector(".js-submit");
+
+                form.querySelectorAll(".js-qty").forEach(function (btn) {
+                    btn.addEventListener("click", function () {
+                        var delta = parseInt(btn.getAttribute("data-delta"), 10) || 0;
+                        var current = clampMin1(input.value);
+                        input.value = clampMin1(current + delta);
+                        submitBtn.click();
+                    });
+                });
+
+                input.addEventListener("change", function () {
+                    input.value = clampMin1(input.value);
+                    submitBtn.click();
+                });
+
+                input.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        input.value = clampMin1(input.value);
+                        submitBtn.click();
+                    }
+                });
+            });
+        })();
+    </script>
+}

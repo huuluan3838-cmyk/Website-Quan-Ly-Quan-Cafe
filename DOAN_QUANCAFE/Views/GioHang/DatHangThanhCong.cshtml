@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "DatHangThanhCong";
+    Layout = "~/Views/Shared/_LayOutHome.cshtml";
+}
+
+<div class="container mt-5 mb-5 text-center">
+    <h2 class="text-success fw-bold">🎉 ĐẶT HÀNG THÀNH CÔNG!</h2>
+    <p class="mt-3">Cảm ơn bạn đã đặt hàng tại <strong>CAFE HOUSE</strong>.</p>
+    <p>Thông tin xác nhận đã được gửi tới email: <strong>@ViewBag.Email</strong></p>
+    <a href="@Url.Action("Index", "TrangChu")" class="btn btn-primary mt-4">← Quay về trang chủ</a>
+
+    <script>
+        setTimeout(function () {
+            window.location.href = '@Url.Action("Index", "TrangChu")';
+        }, 7000); // Tự quay lại sau 7 giây
+    </script>
+</div>

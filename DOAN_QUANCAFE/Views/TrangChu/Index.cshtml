@@ -1,0 +1,34 @@
+﻿@model List<tblSanPham>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayOutQCF.cshtml";
+}
+
+<section class="products">
+    <h2>Sản phẩm nổi bật</h2>
+
+    <div class="product-grid">
+        @foreach (var item in Model)
+        {
+            <article class="product-card">
+                <a href="@Url.Action("ChiTietSP", "TrangChu", new { masp = item.MaSP })" style="text-decoration:none">
+                    <div class="thumb">
+                        <img src="~/Content/Images/Products/@item.HinhAnh" alt="@item.TenSP" />
+                    </div>
+                    <h4 class="title">@item.TenSP</h4>
+                    <p class="price">
+                        <span class="new-price">@String.Format("{0:#,##0}", item.GiaBan) VNĐ</span>
+                    </p>
+                </a>
+                <form action="@Url.Action("AddToCart", "GioHang")" method="post" class="text-center">
+                    <input type="hidden" name="masp" value="@item.MaSP" />
+                    <button type="submit" class="btn btn-cart">
+                        <i class="fas fa-cart-plus me-2"></i> Thêm vào giỏ
+                    </button>
+                </form>
+
+
+            </article>
+        }
+    </div>
+</section>

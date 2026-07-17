@@ -1,0 +1,102 @@
+﻿@model DOAN_QUANCAFE.tblSanPham
+
+@{
+    ViewBag.Title = "Chi tiết sản phẩm";
+    Layout = "~/Views/Shared/_LayOutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">Chi Tiết Sản Phẩm</h2>
+        <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold text-secondary text-center">Hình ảnh</h5>
+                </div>
+                <div class="card-body d-flex align-items-center justify-content-center bg-light">
+
+                    <img src="~/Content/Images/Products/@(Model.HinhAnh)"
+                         alt="@Model.TenSP"
+                         class="img-fluid rounded shadow-sm"
+                         style="max-height: 350px; width: 100%; object-fit: contain;"
+                         onerror="this.onerror=null; this.src='https://via.placeholder.com/350?text=No+Image';" />
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-secondary">Thông tin sản phẩm</h5>
+
+                    <a href="@Url.Action("Edit", new { id = Model.MaSP })" class="btn btn-sm btn-warning fw-bold text-dark">
+                        <i class="bi bi-pencil-square"></i> Chỉnh sửa
+                    </a>
+                </div>
+
+                <div class="card-body">
+                    <h3 class="text-primary fw-bold mb-3">@Model.TenSP</h3>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-borderless align-middle">
+                            <tbody>
+                                <tr>
+                                    <td class="text-muted fw-bold" style="width: 150px;">Mã sản phẩm:</td>
+                                    <td><span class="badge bg-secondary">#@Model.MaSP</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted fw-bold">Giá bán:</td>
+                                    <td class="fs-4 text-danger fw-bold">@String.Format("{0:N0}", Model.GiaBan) VNĐ</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted fw-bold">Kích thước:</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(Model.KichThuoc))
+                                        {
+                                            <span class="badge border border-dark text-dark bg-light">@Model.KichThuoc</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted fst-italic">Chưa cập nhật</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted fw-bold">Loại sản phẩm:</td>
+                                    <td>
+                                        <span class="badge bg-info text-dark">
+                                            @(Model.tblLoaiSanPham != null ? Model.tblLoaiSanPham.TenLoai : "Không xác định")
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted fw-bold">Nhà cung cấp:</td>
+                                    <td>
+                                        <span class="badge bg-success">
+                                            @(Model.tblNhaCungCap != null ? Model.tblNhaCungCap.TenNCC : "Không xác định")
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted fw-bold align-top">Mô tả chi tiết:</td>
+                                    <td>
+                                        <div class="p-3 bg-light rounded border">
+                                            @(string.IsNullOrEmpty(Model.MoTa) ? "Chưa có mô tả cho sản phẩm này." : Model.MoTa)
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,189 @@
+﻿@model DOAN_QUANCAFE.tblKhachHang
+@{
+    ViewBag.Title = "Chỉnh sửa thông tin";
+    Layout = "~/Views/Shared/_LayOutHome.cshtml";
+}
+
+<style>
+    .pe-wrap { max-width: 1100px; }
+    .pe-hero{
+        background: linear-gradient(135deg, rgba(111,78,55,.12) 0%, rgba(255,215,0,.10) 100%);
+        border: 1px solid rgba(0,0,0,.08);
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    }
+    .pe-title{ margin:0; font-weight:900; letter-spacing:.3px; }
+    .pe-sub{ margin:6px 0 0; color:#6c757d; font-weight:600; }
+
+    .pe-card{
+        background:#fff;
+        border:1px solid rgba(0,0,0,.08);
+        border-radius:18px;
+        overflow:hidden;
+        box-shadow:0 10px 30px rgba(0,0,0,.06);
+    }
+    .pe-card-hd{
+        padding:14px 16px;
+        border-bottom:1px solid rgba(0,0,0,.06);
+        background: rgba(248,249,250,.8);
+        backdrop-filter: blur(6px);
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        flex-wrap:wrap;
+    }
+    .pe-body{ padding:16px; }
+
+    .pe-left{
+        border-right:1px solid rgba(0,0,0,.06);
+        background: rgba(248,249,250,.65);
+        padding:16px;
+        text-align:center;
+    }
+    .pe-avatar{
+        width: 170px;
+        height: 170px;
+        object-fit: cover;
+        border-radius: 999px;
+        border: 6px solid rgba(255,255,255,.95);
+        box-shadow: 0 16px 30px rgba(0,0,0,.12);
+        background:#fff;
+    }
+    .pe-name{ margin:12px 0 0; font-weight:900; }
+    .pe-hint{ margin:6px 0 0; color:#6c757d; font-weight:600; font-size:13px; }
+
+    .pe-label{ font-weight:900; }
+    .pe-input .form-control,
+    .pe-input .form-select{
+        border-radius: 14px;
+        padding: 10px 12px;
+    }
+
+    .btn-pill{
+        border-radius:999px;
+        padding:10px 14px;
+        font-weight:900;
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+    }
+
+    @@media (max-width: 992px){
+        .pe-left{ border-right:0; border-bottom:1px solid rgba(0,0,0,.06); }
+    }
+</style>
+
+<section class="container mt-4 mb-5 pe-wrap">
+    <div class="pe-hero mb-3">
+        <h2 class="pe-title text-primary">CHỈNH SỬA THÔNG TIN</h2>
+        <div class="pe-sub">Cập nhật hồ sơ cá nhân và ảnh đại diện</div>
+    </div>
+
+    <div class="pe-card">
+        <div class="row g-0">
+            <!-- Left: preview -->
+            <div class="col-lg-4 pe-left">
+                <img id="avatarPreview"
+                     src="~/Content/Images/avt/@(Model.Avarta ?? "default-user.jpg")"
+                     alt="@Model.TenKH"
+                     class="pe-avatar" />
+
+                <div class="pe-name text-primary">@Model.TenKH</div>
+                <div class="pe-hint">Ảnh xem trước (chọn file để cập nhật)</div>
+
+                <div class="mt-3">
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary btn-pill">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right: form -->
+            <div class="col-lg-8">
+                <div class="pe-card-hd">
+                    <div class="fw-bold text-dark">
+                        <i class="fas fa-user-edit me-2"></i>Thông tin cá nhân
+                    </div>
+                </div>
+
+                <div class="pe-body">
+                    @using (Html.BeginForm("EditProfile", "KhachHangs", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="row g-3 pe-input">
+                            <div class="col-md-6">
+                                <label class="form-label pe-label">Họ và tên</label>
+                                @Html.TextBoxFor(m => m.TenKH, new { @class = "form-control", required = "required", placeholder = "Nhập họ và tên" })
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label pe-label">Giới tính</label>
+                                @Html.DropDownListFor(
+                                    m => m.GioiTinh,
+                                    new SelectList(new[] { "Nam", "Nữ" }, Model.GioiTinh),
+                                    new { @class = "form-select" }
+                                )
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label pe-label">Năm sinh</label>
+                                @Html.TextBoxFor(m => m.NamSinh, new { @class = "form-control", type = "number", min = "1900", max = "2100", placeholder = "VD: 2003" })
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label pe-label">Email</label>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "example@gmail.com" })
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label pe-label">Điện thoại</label>
+                                @Html.TextBoxFor(m => m.DienThoai, new { @class = "form-control", required = "required", placeholder = "Nhập số điện thoại" })
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label pe-label">Địa chỉ</label>
+                                @Html.TextBoxFor(m => m.DiaChi, new { @class = "form-control", placeholder = "Nhập địa chỉ" })
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label pe-label">Cập nhật ảnh đại diện</label>
+                                <input id="fileInput" type="file" name="file" class="form-control" accept="image/*" />
+                                <div class="form-text">Định dạng gợi ý: JPG, PNG. Ảnh vuông hiển thị đẹp hơn.</div>
+                            </div>
+
+                            <div class="col-12 d-flex gap-2 flex-wrap mt-2">
+                                <button type="submit" class="btn btn-primary btn-pill">
+                                    <i class="fas fa-save"></i> Lưu thay đổi
+                                </button>
+
+                                <a href="@Url.Action("Profile", "KhachHangs")" class="btn btn-outline-secondary btn-pill">
+                                    <i class="fas fa-times"></i> Hủy
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    (function () {
+        const input = document.getElementById('fileInput');
+        const img = document.getElementById('avatarPreview');
+        if (!input || !img) return;
+
+        input.addEventListener('change', function () {
+            const f = this.files && this.files[0];
+            if (!f) return;
+            if (!f.type || !f.type.startsWith('image/')) return;
+
+            const url = URL.createObjectURL(f);
+            img.src = url;
+        });
+    })();
+</script>

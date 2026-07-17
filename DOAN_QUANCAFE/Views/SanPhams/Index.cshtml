@@ -1,0 +1,275 @@
+﻿@model IEnumerable<DOAN_QUANCAFE.tblSanPham>
+@using System.Linq
+
+@{
+    ViewBag.Title = "Quản lý sản phẩm";
+    Layout = "~/Views/Shared/_LayOutAdmin.cshtml";
+
+    var list = (Model ?? Enumerable.Empty<DOAN_QUANCAFE.tblSanPham>()).ToList();
+    int total = list.Count;
+
+    // nhóm loại để tạo radio lọc nhanh
+    var categories = list
+        .Select(p => new
+        {
+            Id = p.LoaiSP,
+            Name = (p.tblLoaiSanPham != null && !string.IsNullOrWhiteSpace(p.tblLoaiSanPham.TenLoai))
+                ? p.tblLoaiSanPham.TenLoai
+                : ("Loại " + p.LoaiSP)
+        })
+        .GroupBy(x => x.Id)
+        .Select(g => g.First())
+        .OrderBy(x => x.Name)
+        .ToList();
+}
+
+<style>
+    .page-wrap {
+        padding: 18px;
+    }
+
+    .thumb-wrap {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #eee;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .thumb-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .filters {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 10px 12px;
+        border: 1px solid rgba(0,0,0,.10);
+        border-radius: 12px;
+        background: #fff;
+    }
+
+        .filters label {
+            margin: 0;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            cursor: pointer;
+        }
+</style>
+
+<div class="container-fluid page-wrap">
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-warning mb-3" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
+        <div>
+            <h2 class="text-primary fw-bold mb-1">Danh Sách Sản Phẩm</h2>
+            <p class="text-muted mb-0">Quản lý toàn bộ sản phẩm, giá bán và tồn kho.</p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <a href="@Url.Action("Create")" class="btn btn-primary btn-lg shadow-sm">
+                <i class="bi bi-plus-lg"></i> Thêm Sản Phẩm Mới
+            </a>
+        </div>
+    </div>
+
+    @* Radio lọc nhanh *@
+    <div class="filters mb-3">
+        <strong style="margin-right:6px;">Lọc nhanh:</strong>
+
+        <label>
+            <input type="radio" name="quickFilter" checked onclick="filterProducts('all')" />
+            Tất cả
+        </label>
+
+        @foreach (var c in categories)
+        {
+            <label>
+                <input type="radio" name="quickFilter" onclick="filterProducts('@c.Id')" />
+                @c.Name
+            </label>
+        }
+    </div>
+
+    @using (Html.BeginForm("BulkDelete", "SanPhams", new { area = "Admin" }, FormMethod.Post, new { id = "bulkDeleteForm" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+            <button type="submit" class="btn btn-danger" onclick="return confirmBulkDelete();">
+                Xóa các sản phẩm đã chọn
+            </button>
+            <span class="text-muted">Chọn checkbox trong bảng để xóa hàng loạt.</span>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle mb-0">
+                        <thead class="bg-light text-secondary">
+                            <tr>
+                                <th class="ps-4" style="width:60px; text-align:center;">
+                                    <input type="checkbox" id="checkAll" />
+                                </th>
+                                <th class="ps-0" style="width: 100px;">Hình ảnh</th>
+                                <th style="width: 260px;">Tên sản phẩm</th>
+                                <th>Giá bán</th>
+                                <th>Kích thước</th>
+                                <th>Phân loại</th>
+                                <th>Nhà cung cấp</th>
+                                <th class="text-center" style="width: 160px;">Thao tác</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (!list.Any())
+                            {
+                                <tr>
+                                    <td colspan="8" class="text-center py-5">
+                                        <p class="text-muted mb-3">Chưa có sản phẩm nào trong kho.</p>
+                                        <a href="@Url.Action("Create")" class="btn btn-sm btn-primary">Thêm ngay</a>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                foreach (var item in list)
+                                {
+                                    var img = string.IsNullOrWhiteSpace(item.HinhAnh) ? "placeholder.jpg" : item.HinhAnh;
+
+                                    var tenLoai =
+                                        (item.tblLoaiSanPham != null && !string.IsNullOrWhiteSpace(item.tblLoaiSanPham.TenLoai))
+                                            ? item.tblLoaiSanPham.TenLoai
+                                            : "N/A";
+
+                                    var tenNcc =
+                                        (item.tblNhaCungCap != null && !string.IsNullOrWhiteSpace(item.tblNhaCungCap.TenNCC))
+                                            ? item.tblNhaCungCap.TenNCC
+                                            : "N/A";
+
+                                    <tr class="product-row" data-category="@item.LoaiSP">
+                                        <td class="ps-4" style="text-align:center;">
+                                            <input type="checkbox" class="checkItem" name="selectedIds" value="@item.MaSP" />
+                                        </td>
+                                        <td class="ps-0">
+                                            <div class="thumb-wrap">
+                                                <img src="~/Content/Images/Products/@img"
+                                                     alt="@item.TenSP"
+                                                     onerror="this.onerror=null; this.src='@Url.Content("~/Content/Images/Products/placeholder.jpg")';" />
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="fw-bold text-dark">@item.TenSP</div>
+                                            <small class="text-muted">Mã: #@item.MaSP</small>
+                                        </td>
+
+                                        <td class="fw-bold text-danger">
+                                            @String.Format("{0:N0}", item.GiaBan) <span class="small text-muted">VNĐ</span>
+                                        </td>
+
+                                        <td>
+                                            @if (!string.IsNullOrWhiteSpace(item.KichThuoc))
+                                            {
+                                                <span class="badge bg-light text-dark border">@item.KichThuoc</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted small">-</span>
+                                            }
+                                        </td>
+
+                                        <td>
+                                            <span class="badge bg-info text-dark bg-opacity-10 text-info border border-info">
+                                                @tenLoai
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="badge bg-success bg-opacity-10 text-success border border-success">
+                                                @tenNcc
+                                            </span>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group" aria-label="Actions">
+                                                <a href="@Url.Action("Edit", new { id = item.MaSP })"
+                                                   class="btn btn-sm btn-outline-warning"
+                                                   title="Sửa">✏️</a>
+
+                                                <a href="@Url.Action("Details", new { id = item.MaSP })"
+                                                   class="btn btn-sm btn-outline-info"
+                                                   title="Chi tiết">👁️</a>
+
+                                                <a href="@Url.Action("Delete", new { id = item.MaSP })"
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   title="Xóa">🗑️</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card-footer bg-white py-3">
+                <small class="text-muted">Hiển thị tổng cộng <strong>@total</strong> sản phẩm.</small>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts{
+    <script>
+        // Checkbox "Chọn tất cả"
+        document.addEventListener("DOMContentLoaded", function () {
+            var checkAll = document.getElementById("checkAll");
+            if (!checkAll) return;
+
+            checkAll.addEventListener("click", function () {
+                var items = document.querySelectorAll(".checkItem");
+                items.forEach(function (cb) { cb.checked = checkAll.checked; });
+            });
+        });
+
+        // Radio lọc nhanh client-side theo data-category
+        function filterProducts(category) {
+            var rows = document.querySelectorAll(".product-row");
+            rows.forEach(function (row) {
+                if (category === 'all') {
+                    row.style.display = '';
+                } else {
+                    var c = row.getAttribute("data-category");
+                    row.style.display = (c === category) ? '' : 'none';
+                }
+            });
+        }
+
+        // Chặn submit BulkDelete nếu chưa tick + confirm
+        function confirmBulkDelete() {
+            var checked = document.querySelectorAll(".checkItem:checked");
+            if (!checked || checked.length === 0) {
+                alert("Vui lòng chọn ít nhất một sản phẩm để xóa!");
+                return false;
+            }
+            return confirm("Xác nhận xóa các sản phẩm đã chọn?");
+        }
+    </script>
+}

@@ -1,0 +1,129 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Đăng nhập hệ thống</title>
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #6B4423 0%, #8B5A3C 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .btn-login {
+            background: #6B4423;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            font-weight: bold;
+            border-radius: 25px;
+            transition: 0.3s;
+            border: none;
+        }
+
+            .btn-login:hover {
+                background: #4e311a;
+                transform: translateY(-2px);
+                color: white;
+            }
+
+        .btn-google {
+            background-color: #dd4b39;
+            color: white;
+            border-radius: 25px;
+            padding: 10px;
+            text-decoration: none;
+            display: block;
+            transition: 0.3s;
+        }
+
+            .btn-google:hover {
+                background-color: #c23321;
+                color: white;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+
+        .forgot-link {
+            color: #6B4423;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+            .forgot-link:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="text-center mb-4">
+            <h2 style="color: #6B4423; font-weight: bold;">☕ CAFE HOUSE</h2>
+            <p class="text-muted">Chào mừng bạn quay trở lại!</p>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger text-center shadow-sm">@ViewBag.Error</div>
+        }
+
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+            <div class="mb-3">
+                <label class="form-label fw-bold"><i class="fa fa-user"></i> Tài khoản / SĐT</label>
+                <input type="text" name="UserPhone" class="form-control form-control-lg" placeholder="Nhập SĐT hoặc Tên Admin" required />
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label fw-bold"><i class="fa fa-lock"></i> Mật khẩu</label>
+                <input type="password" name="Password" class="form-control form-control-lg" placeholder="••••••" required />
+            </div>
+
+            <div class="text-end mb-4">
+                <a href="@Url.Action("ForgotPassword", "Account")" class="forgot-link">Quên mật khẩu?</a>
+            </div>
+
+            <button type="submit" class="btn btn-login mb-3 shadow">ĐĂNG NHẬP</button>
+
+            <div class="text-center mb-3">
+                <small class="text-muted">
+                    Chưa có tài khoản?
+                    <a href="@Url.Action("Register", "Account", new { returnUrl = ViewBag.ReturnUrl })"
+                       style="color: #6B4423; font-weight: bold; text-decoration: none;">Đăng ký ngay</a>
+                </small>
+            </div>
+
+            <div class="position-relative mb-4 mt-4">
+                <hr />
+                <span class="position-absolute top-50 start-50 translate-middle bg-white px-2 text-muted" style="font-size: 0.8rem;">HOẶC</span>
+            </div>
+
+            <div class="text-center">
+                <a href="@Url.Action("LoginGoogle", "Account")" class="btn btn-google shadow-sm">
+                    <i class="fa fa-google me-2"></i> Đăng nhập với Google
+                </a>
+            </div>
+        }
+    </div>
+</body>
+</html>

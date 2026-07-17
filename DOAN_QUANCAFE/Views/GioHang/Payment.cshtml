@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "Thanh toán chuyển khoản";
+    Layout = "~/Views/Shared/_LayOutHome.cshtml";
+    var hd = ViewBag.OrderInfo as DOAN_QUANCAFE.tblHoaDon;
+}
+
+<div class="container text-center" style="margin-top: 50px; margin-bottom: 50px;">
+    <h2 class="text-primary">THANH TOÁN ĐƠN HÀNG #@hd.MaHD</h2>
+    <p>Vui lòng mở App Ngân hàng (MB, VCB, Techcombank...) để quét mã QR bên dưới</p>
+
+    <div class="card" style="display: inline-block; padding: 20px; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <img src="@ViewBag.QrImage" alt="Mã QR Thanh Toán" width="350" />
+
+        <div style="margin-top: 20px; text-align: left; padding-left: 20px;">
+            <p><strong>Số tiền cần trả:</strong> <span style="color: red; font-size: 20px; font-weight: bold;">@string.Format("{0:N0}", hd.TongTien) đ</span></p>
+            <p><strong>Nội dung chuyển khoản:</strong> THANHTOAN HD@hd.MaHD</p>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <p class="text-danger">Lưu ý: Sau khi chuyển khoản xong, hãy bấm nút dưới đây để hoàn tất.</p>
+        <a href="@Url.Action("ConfirmPayment", "GioHang", new { id = hd.MaHD })" class="btn btn-success btn-lg">
+            <i class="fa fa-check-circle"></i> TÔI ĐÃ CHUYỂN KHOẢN XONG
+        </a>
+    </div>
+</div>

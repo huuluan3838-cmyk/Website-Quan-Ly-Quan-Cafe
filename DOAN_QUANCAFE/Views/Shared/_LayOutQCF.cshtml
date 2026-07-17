@@ -1,0 +1,657 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>☕ Quán Cafe</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6F4E37; /* Nâu cà phê đậm */
+            --dark: #3E2723; /* Nâu sẫm (cho nền Header) */
+            --light: #fff; /* Trắng (cho chữ trên nền đậm) */
+            --accent: #FFD700; /* Vàng đồng (điểm nhấn) */
+            --hover: #5A402C; /* Nâu đậm hơn khi hover */
+            --secondary: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #FFF8E7;
+            color: #3E2723;
+        }
+
+        /* HEADER */
+        .site-header {
+            background: linear-gradient(135deg, #6F4E37 0%, #3E2723 100%);
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--light);
+            text-decoration: none;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+            .logo span {
+                color: var(--accent);
+            }
+
+            .logo:hover {
+                transform: scale(1.05);
+                color: var(--accent);
+            }
+
+        .main-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+            .main-nav a {
+                color: var(--light);
+                text-decoration: none;
+                font-weight: 500;
+                transition: all 0.3s;
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+            }
+
+                .main-nav a:hover {
+                    background:#fff;
+                    color: #dc3545;
+                }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropbtn {
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: #fff;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            overflow: hidden;
+            top: 100%;
+            margin-top: 0.5rem;
+        }
+
+            .dropdown-content a {
+                color: var(--dark);
+                padding: 12px 20px;
+                display: block;
+                transition: all 0.3s;
+            }
+
+                .dropdown-content a:hover {
+                    background: var(--accent);
+                    color: #fff;
+                }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+            .search-box input {
+                padding: 0.6rem 1rem;
+                border: 2px solid var(--accent);
+                border-radius: 25px;
+                outline: none;
+                width: 200px;
+                transition: all 0.3s;
+            }
+
+                .search-box input:focus {
+                    border-color: var(--light);
+                }
+
+            .search-box button {
+                padding: 0.6rem 1.5rem;
+                background: var(--accent);
+                color: var(--dark);
+                border: none;
+                border-radius: 25px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.3s;
+            }
+
+                .search-box button:hover {
+                    background: var(--light);
+                    transform: translateY(-2px);
+                }
+
+        .btn-login {
+            padding: 0.6rem 1.5rem;
+            background: var(--accent);
+            color: var(--dark);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+            .btn-login:hover {
+                background: var(--light);
+                transform: translateY(-2px);
+            }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .site-main {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            height: fit-content;
+            sticky: top;
+        }
+
+            .sidebar h3 {
+                color: var(--primary);
+                margin-bottom: 1rem;
+                font-size: 1.3rem;
+                border-bottom: 3px solid var(--accent);
+                padding-bottom: 0.5rem;
+            }
+
+        .category-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+
+            .category-list li {
+                margin: 0.5rem 0;
+            }
+
+            .category-list a {
+                color: var(--dark);
+                text-decoration: none;
+                display: block;
+                padding: 0.7rem 1rem;
+                border-radius: 8px;
+                transition: all 0.3s;
+            }
+
+                .category-list a:hover {
+                    background: var(--accent);
+                    color: #fff;
+                    transform: translateX(5px);
+                }
+
+        /* PRODUCTS */
+        .products {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+            .products h2 {
+                color: var(--primary);
+                margin-bottom: 2rem;
+                font-size: 2rem;
+                border-bottom: 3px solid var(--accent);
+                padding-bottom: 1rem;
+            }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+            .product-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            }
+
+            .product-card a {
+                text-decoration: none;
+                color: inherit;
+            }
+
+        .thumb {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            position: relative;
+        }
+
+            .thumb img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.5s;
+            }
+
+        .product-card:hover .thumb img {
+            transform: scale(1.1);
+        }
+
+        .product-card .title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+            padding: 1rem 1.5rem 0.5rem;
+        }
+
+        .price {
+            padding: 0 1.5rem 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 0.95rem;
+        }
+
+        .new-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .product-card .btn {
+            margin: 0 1.5rem 1.5rem;
+            width: calc(100% - 3rem);
+            background: var(--primary);
+            border: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+            .product-card .btn:hover {
+                background: var(--hover);
+                transform: translateY(-2px);
+            }
+
+        /* FOOTER MỚI */
+        .site-footer {
+            background: linear-gradient(135deg, #6B4423 0%, #8B5A3C 100%);
+            color: #fff;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid; /* Chia cột */
+            grid-template-columns: 1fr 1fr; /* 2 cột bằng nhau */
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .footer-info h4 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .footer-info p {
+            margin: 0.8rem 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-info i {
+            color: var(--accent);
+            width: 25px;
+        }
+
+        .footer-map {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 2px solid var(--accent); /* Viền vàng cho nổi */
+        }
+
+        .footer-map iframe {
+            width: 100%;
+            height: 250px; /* Chiều cao bản đồ */
+            border: 0;
+            display: block;
+        }
+
+        .copy {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* FORM STYLES */
+        .form-control, .form-select {
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            padding: 0.6rem;
+            transition: all 0.3s;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 0.2rem rgba(111, 78, 55, 0.25);
+            }
+
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            transition: all 0.3s;
+        }
+
+            .btn-primary:hover {
+                background: var(--hover);
+                transform: translateY(-2px);
+            }
+
+        .btn-danger {
+            background: #dc3545;
+            border: none;
+            transition: all 0.3s;
+        }
+
+            .btn-danger:hover {
+                background: #c82333;
+                transform: translateY(-2px);
+            }
+        /* CSS MỚI CHO GIỎ HÀNG */
+        .cart-icon-container {
+            position: relative;
+            margin-right: 0.2rem; /* Cách nút Đăng nhập một khoảng */
+            margin-left: 1rem;
+        }
+
+            .cart-icon-container a {
+                color: var(--light);
+                font-size: 1.5rem;
+                transition: color 0.3s, transform 0.3s;
+                display: block;
+            }
+
+                .cart-icon-container a:hover {
+                    color: var(--accent);
+                    transform: scale(1.1);
+                }
+
+        .cart-count {
+            position: absolute;
+            top: -10px; /* Di chuyển lên trên */
+            right: -10px;
+            background: #dc3545; /* Màu đỏ nổi bật */
+            color: var(--light);
+            border-radius: 50%;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            line-height: 1; /* Đảm bảo số nằm giữa */
+            min-width: 22px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .dropdown-content {
+            right: 0;
+            left: auto;
+        }
+        /* Ảnh chi tiết sản phẩm */
+        .product-detail-img {
+            overflow: hidden;
+            border-radius: 12px;
+            cursor: zoom-in;
+        }
+
+            .product-detail-img img {
+                width: 100%;
+                height: auto;
+                transition: transform 0.45s ease, filter 0.45s ease;
+            }
+
+            /* Hover zoom */
+            .product-detail-img:hover img {
+                transform: scale(1.12);
+                filter: brightness(1.05);
+            }
+
+        /* MENU 2 CẤP */
+        .main-nav {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+            .main-nav a {
+                color: var(--light);
+                text-decoration: none;
+                font-weight: 500;
+                padding: 0.5rem 1rem;
+                transition: 0.3s;
+            }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: #fff;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            top: 100%;
+            left: 0;
+            z-index: 10000;
+            margin-top: 10px;
+        }
+        /* Ép hiển thị khi hover */
+        .dropdown:hover .dropdown-content {
+            display: block !important;
+        }
+
+        .dropdown-content a {
+            color: var(--dark) !important;
+            padding: 12px 20px !important;
+            display: block !important;
+            border-bottom: 1px solid #eee;
+        }
+
+            .dropdown-content a:hover {
+                background: var(--accent) !important;
+                color: #3E2723 !important;
+            }
+
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="@Url.Action("Index","TrangChu")" class="logo text-white fw-bold fs-3 text-decoration-none">Cafe<span style="color:var(--accent)">House</span></a>
+
+            <nav class="main-nav">
+                <a href="@Url.Action("Index","Home")">Trang chủ</a>
+                <div class="dropdown">
+                    <a href="javascript:void(0)" class="dropbtn">Sản phẩm <i class="fas fa-caret-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="@Url.Action("Index", "TrangChu", new { id = 1 })">☕ Cà phê</a>
+                        <a href="@Url.Action("Index", "TrangChu", new { id = 2 })">🥤 Trà sữa</a>
+                        <a href="@Url.Action("Index", "TrangChu", new { id = 3 })">🍹 Sinh tố</a>
+                        <a href="@Url.Action("Index", "TrangChu", new { id = 4 })">🍰 Bánh ngọt</a>
+                    </div>
+                </div>
+                <a href="@Url.Action("Index","GioiThieu")">Giới thiệu</a>
+                <a href="@Url.Action("Index","LienHe")">Liên hệ</a>
+            </nav>
+
+            <form class="search-box"
+                  action="@Url.Action("TimKiemNC", "Home")"
+                  method="get">
+
+                <!-- Tìm nhanh theo tên -->
+                <input type="text"
+                       name="sTenSP"
+                       placeholder="Tìm đồ uống..."
+                       value="@Request.QueryString["sTenSP"]" />
+
+                <!-- Ẩn các điều kiện nâng cao -->
+                <input type="hidden" name="sTuKhoa" value="" />
+                <input type="hidden" name="iMaLoai" value="" />
+                <input type="hidden" name="sMucGia" value="" />
+
+                <button type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+
+            <div class="cart-icon-container">
+                <a href="@Url.Action("Index", "GioHang")" class="position-relative">
+                    <i class="fas fa-shopping-cart fa-lg text-white"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        @((Session["Cart"] != null) ? ((List<DOAN_QUANCAFE.Models.GioHangItem>)Session["Cart"]).Sum(x => x.SoLuong) : 0)
+                    </span>
+                </a>
+
+            </div>
+            @if (Session["User"] != null)
+            {
+                <div class="dropdown">
+                    <a href="#" class="btn-login dropbtn" style="background: #FFD700; color: #3E2723;">
+                        Chào, @Session["UserName"] <i class="fas fa-caret-down ms-1"></i>
+                    </a>
+                    <div class="dropdown-content" style="right: 0; left: auto; min-width: 220px;">
+                        <a href="@Url.Action("ThongTinTaiKhoan", "KhachHangs")">
+                            <i class="fas fa-user"></i> Thông tin tài khoản
+                        </a>
+                        <a href="@Url.Action("LichSuDatHang", "GioHang")">
+                            <i class="fas fa-history"></i> Lịch sử đặt hàng
+                        </a>
+                        <a href="@Url.Action("LogOff", "Account")" style="color: #dc3545;">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <a href="@Url.Action("Login", "Account")" class="btn-login">Đăng nhập</a>
+                    <a href="@Url.Action("Register", "Account")" class="btn-login" style="background: #fff; color: #6B4423; margin-left: 5px;">
+                        Đăng ký
+                    </a>
+                </div>
+            }
+
+        </div>
+    </header>
+    <!-- MAIN -->
+    <main class="container site-main">
+
+        <div class="sidebar-wrapper">
+            @Html.Action("_DanhMuc", "DanhMuc")
+        </div>
+
+        <div class="main-content-wrapper">
+            @RenderBody()
+        </div>
+
+    </main>
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+
+            <div class="footer-info">
+                <h4>CafeHouse</h4>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Nguyễn Huệ, Quận 1, TP. HCM</p>
+                <p><i class="fas fa-phone-alt"></i> 0909 123 456</p>
+                <p><i class="fas fa-envelope"></i> contact@cafehouse.vn</p>
+                <p><i class="fas fa-clock"></i> 07:00 - 22:00 (Hàng ngày)</p>
+            </div>
+
+            <div class="footer-map">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3295.5129850040457!2d106.6278853048064!3d10.807674841320111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752be27d8b4f4d%3A0x92dcba2950430867!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBDw7RuZyBUaMawxqFuZyBUUC4gSOG7kyBDaMOtIE1pbmggKEhVSVQp!5e0!3m2!1svi!2s!4v1765808712886!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+
+        </div>
+
+        <div class="copy">
+            <p>&copy; 2025 CafeHouse - Hệ thống quản lý quán Cafe chuyên nghiệp.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,479 @@
+﻿@model DOAN_QUANCAFE.tblHoaDon
+@using System.Linq
+@using DOAN_QUANCAFE.Models
+
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Views/Shared/_LayOutHome.cshtml";
+
+    var chiTiet = ViewBag.ChiTiet as List<DOAN_QUANCAFE.tblChiTietHoaDon> ?? new List<DOAN_QUANCAFE.tblChiTietHoaDon>();
+
+    string trangThai;
+    switch (Model.TinhTrang)
+    {
+        case 1: trangThai = "Chờ xử lý"; break;
+        case 2: trangThai = "Đã giao hàng"; break;
+        case 3: trangThai = "Đã hủy"; break;
+        default: trangThai = "Không rõ"; break;
+    }
+
+    string statusClass =
+        (Model.TinhTrang == 1) ? "chip chip-wait" :
+        (Model.TinhTrang == 2) ? "chip chip-done" :
+        (Model.TinhTrang == 3) ? "chip chip-cancel" :
+        "chip chip-unk";
+
+    bool isPaid = (Model.DaThanhToan == true);
+    string payText = isPaid ? "Đã thanh toán" : "Chưa thanh toán";
+    string payClass = isPaid ? "chip chip-paid" : "chip chip-unpaid";
+
+    decimal itemsTotal = 0m;
+    int itemsCount = 0;
+
+    foreach (var it in chiTiet)
+    {
+        int qty = it.SoLuong ?? 0;
+        decimal price = it.GiaBan ?? 0m;
+        itemsTotal += (price * qty);
+        itemsCount += qty;
+    }
+
+    decimal orderTotal = Model.TongTien ?? 0m;
+}
+
+<style>
+    .od-wrap {
+        max-width: 1280px;
+    }
+
+    .od-head {
+        background: linear-gradient(135deg, rgba(111,78,55,.14) 0%, rgba(255,215,0,.10) 100%);
+        border: 1px solid rgba(0,0,0,.08);
+        border-radius: 18px;
+        padding: 16px 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    }
+
+    .od-title {
+        margin: 0;
+        font-weight: 900;
+        letter-spacing: .3px;
+        color: var(--primary);
+        line-height: 1.25;
+    }
+
+    .od-sub {
+        margin-top: 6px;
+        color: #6c757d;
+        font-weight: 700;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-weight: 900;
+        font-size: 12px;
+        border: 1px solid rgba(0,0,0,.08);
+        white-space: nowrap;
+    }
+
+    .chip-wait {
+        background: rgba(255,193,7,.18);
+        color: #8a5a00;
+    }
+
+    .chip-done {
+        background: rgba(25,135,84,.16);
+        color: #0f5132;
+    }
+
+    .chip-cancel {
+        background: rgba(220,53,69,.14);
+        color: #842029;
+    }
+
+    .chip-unk {
+        background: rgba(108,117,125,.14);
+        color: #495057;
+    }
+
+    .chip-paid {
+        background: rgba(13,110,253,.14);
+        color: #0a58ca;
+    }
+
+    .chip-unpaid {
+        background: rgba(33,37,41,.10);
+        color: #212529;
+    }
+
+    .od-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .btn-pill {
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-weight: 900;
+    }
+
+    .btn-danger.btn-pill {
+        box-shadow: 0 10px 20px rgba(220,53,69,.18);
+    }
+
+    .od-cols {
+        margin-top: 14px;
+        display: grid;
+        grid-template-columns: 420px 1fr; /* song song */
+        gap: 14px;
+        align-items: start;
+    }
+
+    .od-card {
+        background: #fff;
+        border: 1px solid rgba(0,0,0,.08);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    }
+
+    .od-card-hd {
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(0,0,0,.06);
+        background: rgba(248,249,250,.85);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+        .od-card-hd .left {
+            font-weight: 900;
+            color: var(--dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .od-card-hd .right {
+            color: #6c757d;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+    .kv-wrap {
+        padding: 16px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .kv {
+        border: 1px solid rgba(0,0,0,.06);
+        border-radius: 14px;
+        padding: 12px 12px;
+        background: #fff;
+    }
+
+    .k {
+        font-size: 12px;
+        color: #6c757d;
+        margin-bottom: 2px;
+        font-weight: 800;
+    }
+
+    .v {
+        font-weight: 900;
+        color: #212529;
+    }
+
+        .v.muted {
+            font-weight: 700;
+            color: #495057;
+            line-height: 1.35;
+        }
+
+    .od-table thead th {
+        border: 0;
+        font-weight: 900;
+        letter-spacing: .25px;
+        background: #2c2f33 !important;
+        color: #fff !important;
+        padding: 14px 12px;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .od-table tbody td {
+        padding: 14px 12px;
+        vertical-align: middle;
+        border-top: 1px solid rgba(0,0,0,.06);
+    }
+
+    .od-table tbody tr {
+        transition: all .15s ease;
+    }
+
+        .od-table tbody tr:hover {
+            background: rgba(111,78,55,.06);
+        }
+
+    .p-thumb {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        object-fit: cover;
+        background: #fff;
+        border: 2px solid rgba(255,215,0,.35);
+        box-shadow: 0 6px 14px rgba(0,0,0,.10);
+    }
+
+    .p-name {
+        font-weight: 900;
+        color: #212529;
+        line-height: 1.25;
+    }
+
+    .p-sub {
+        color: #6c757d;
+        font-weight: 700;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .num, .money {
+        font-weight: 900;
+        white-space: nowrap;
+    }
+
+    .money-danger {
+        font-weight: 900;
+        color: #dc3545;
+        white-space: nowrap;
+    }
+
+    .od-summary {
+        border-top: 1px solid rgba(0,0,0,.06);
+        background: rgba(248,249,250,.65);
+        padding: 14px 16px 18px;
+    }
+
+    .sum-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        gap: 12px;
+    }
+
+        .sum-row .label {
+            color: #6c757d;
+            font-weight: 900;
+        }
+
+        .sum-row .value {
+            font-weight: 900;
+            color: #212529;
+            white-space: nowrap;
+        }
+
+    .sum-total {
+        margin-top: 8px;
+        padding-top: 10px;
+        border-top: 2px solid rgba(255,215,0,.45);
+    }
+
+        .sum-total .value {
+            font-size: 18px;
+            color: #198754;
+        }
+
+    .od-sticky {
+        position: sticky;
+        top: 92px;
+    }
+    /* giữ card thông tin khi cuộn (nếu muốn) */
+
+    .od-empty {
+        border: 1px dashed rgba(0,0,0,.18);
+        border-radius: 18px;
+        padding: 18px;
+        background: rgba(248,249,250,.7);
+        color: #6c757d;
+        font-weight: 800;
+    }
+
+    @@media (max-width: 992px) {
+        .od-cols {
+            grid-template-columns: 1fr;
+        }
+
+        .od-sticky {
+            position: static;
+            top: auto;
+        }
+
+        .od-actions {
+            justify-content: flex-start;
+        }
+    }
+</style>
+
+<section class="container mt-4 mb-5 od-wrap">
+
+    <!-- HEADER -->
+    <div class="od-head">
+        <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+            <div>
+                <h2 class="od-title">
+                    Chi tiết đơn hàng <span style="color:var(--dark)">#@Model.MaHD</span>
+                </h2>
+            </div>
+
+            <div class="od-actions">
+                <a href="javascript:history.back()" class="btn btn-outline-secondary btn-pill">
+                    <i class="fas fa-arrow-left me-1"></i> Quay lại
+                </a>
+
+                @if (Model.TinhTrang == 1)
+                {
+                    <form action="@Url.Action("HuyDonHang", "GioHang", new { id = Model.MaHD })"
+                          method="post"
+                          onsubmit="return confirm('Bạn có chắc muốn hủy đơn này?');"
+                          style="margin:0;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger btn-pill">
+                            <i class="fas fa-times-circle me-1"></i> Hủy đơn
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- SONG SONG: LEFT INFO + RIGHT LIST -->
+    <div class="od-cols">
+
+        <!-- LEFT: INFO -->
+        <div class="od-card od-sticky">
+            <div class="od-card-hd">
+                <div class="left">
+                    <i class="fas fa-receipt"></i>
+                    <span>Thông tin đơn hàng</span>
+                </div>
+                <div class="right">#@Model.MaHD</div>
+            </div>
+
+            <div class="kv-wrap">
+                <div class="kv">
+                    <div class="k">Ngày lập</div>
+                    <div class="v muted">@((Model.NgayLap.HasValue) ? Model.NgayLap.Value.ToString("dd/MM/yyyy HH:mm") : "")</div>
+                </div>
+
+                <div class="kv">
+                    <div class="k">Trạng thái</div>
+                    <div class="v">@trangThai</div>
+                </div>
+
+                <div class="kv">
+                    <div class="k">Thanh toán</div>
+                    <div class="v">@payText</div>
+                </div>
+
+                <div class="kv">
+                    <div class="k">Tổng số lượng</div>
+                    <div class="v">@itemsCount</div>
+                </div>
+
+                <div class="kv">
+                    <div class="k">Địa chỉ giao hàng</div>
+                    <div class="v muted">@Model.DiaChiGiaoHang</div>
+                </div>
+
+                <div class="od-summary" style="border-top: 0; border-radius: 0;">
+                    <div class="sum-row">
+                        <div class="label">Tổng theo chi tiết</div>
+                        <div class="value">@String.Format("{0:#,##0} đ", itemsTotal)</div>
+                    </div>
+                    <div class="sum-row sum-total">
+                        <div class="label">Tổng đơn hàng</div>
+                        <div class="value">@String.Format("{0:#,##0} đ", orderTotal)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: LIST -->
+        <div class="od-card">
+            <div class="od-card-hd">
+                <div class="left">
+                    <i class="fas fa-list-ul"></i>
+                    <span>Danh sách sản phẩm</span>
+                </div>
+                <div class="right">@chiTiet.Count sản phẩm</div>
+            </div>
+
+            @if (chiTiet == null || !chiTiet.Any())
+            {
+                <div class="p-3">
+                    <div class="od-empty">Không có chi tiết đơn hàng.</div>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table od-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th style="width: 150px;">Đơn giá</th>
+                                <th style="width: 110px;">Số lượng</th>
+                                <th style="width: 160px;">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in chiTiet)
+                            {
+                                var sp = item.tblSanPham;
+                                string tenSp = (sp != null && !string.IsNullOrWhiteSpace(sp.TenSP)) ? sp.TenSP : "(Không có tên)";
+                                string img = (sp != null && !string.IsNullOrWhiteSpace(sp.HinhAnh)) ? sp.HinhAnh : "placeholder.jpg";
+
+                                int qty = item.SoLuong ?? 0;
+                                decimal price = item.GiaBan ?? 0m;
+                                decimal lineTotal = price * qty;
+
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img class="p-thumb" src="~/Content/Images/Products/@img" alt="@tenSp" />
+                                            <div>
+                                                <div class="p-name">@tenSp</div>
+                                                <div class="p-sub">Mã SP: @(sp != null ? sp.MaSP.ToString() : "-")</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="money">@String.Format("{0:#,##0} đ", price)</td>
+                                    <td class="num">@qty</td>
+                                    <td class="money-danger">@String.Format("{0:#,##0} đ", lineTotal)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+    </div>
+</section>

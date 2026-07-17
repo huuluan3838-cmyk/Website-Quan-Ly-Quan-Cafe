@@ -1,0 +1,511 @@
+﻿@model List<DOAN_QUANCAFE.Models.GioHangItem>
+@using System.Linq
+@using DOAN_QUANCAFE.Models
+
+@{
+    ViewBag.Title = "Thanh toán";
+    Layout = "~/Views/Shared/_LayOutHome.cshtml";
+
+    var user = Session["User"] as DOAN_QUANCAFE.tblKhachHang;
+
+    var cart = Model ?? new List<GioHangItem>();
+    decimal subTotal = cart.Any() ? cart.Sum(x => x.ThanhTien) : 0m;
+
+    decimal shipping = (ViewBag.ShippingFee != null) ? (decimal)ViewBag.ShippingFee : 20000m;
+    decimal discount = (ViewBag.DiscountAmount != null) ? (decimal)ViewBag.DiscountAmount : 0m;
+    string couponCode = (ViewBag.CouponCode != null) ? (string)ViewBag.CouponCode : "";
+
+    if (discount < 0m) { discount = 0m; }
+    if (discount > (subTotal + shipping)) { discount = (subTotal + shipping); }
+
+    decimal grandTotal = (ViewBag.GrandTotal != null)
+        ? (decimal)ViewBag.GrandTotal
+        : (subTotal + shipping - discount);
+
+    if (grandTotal < 0m) { grandTotal = 0m; }
+
+    // Hiển thị phí vận chuyển: tự động miễn phí nếu shipping == 0
+    string shippingText = (shipping == 0m) ? "Miễn phí" : String.Format("{0:#,##0}đ", shipping);
+}
+
+<style>
+    .checkout-wrap {
+        margin-top: 1rem;
+        display: grid;
+        grid-template-columns: 1fr 420px;
+        gap: 1.5rem;
+        align-items: start;
+    }
+
+    .card-box {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        padding: 1.5rem;
+    }
+
+    .card-title {
+        color: var(--primary);
+        font-weight: 900;
+        border-bottom: 3px solid var(--accent);
+        padding-bottom: .75rem;
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+    }
+
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .form-label {
+        font-weight: 700;
+        color: var(--dark);
+    }
+
+    .form-control, .form-select {
+        border: 2px solid var(--accent);
+        border-radius: 12px;
+        padding: .7rem .9rem;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(111,78,55,0.20);
+        }
+
+    /* ADDRESS BLOCK */
+    .address-title {
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+        font-weight: 900;
+        color: var(--dark);
+        margin: 1.25rem 0 .75rem;
+    }
+
+        .address-title i {
+            color: #dc3545;
+        }
+
+    /* ORDER LIST SCROLL (hiển thị ~3 item) */
+    .order-items {
+        max-height: 225px;
+        overflow-y: auto;
+        padding-right: .35rem;
+    }
+
+    .order-item {
+        display: grid;
+        grid-template-columns: 56px 1fr auto;
+        gap: .8rem;
+        align-items: center;
+        padding: .75rem 0;
+        border-bottom: 1px dashed rgba(0,0,0,0.12);
+    }
+
+        .order-item:last-child {
+            border-bottom: 0;
+        }
+
+    .order-thumb {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        object-fit: cover;
+        border: 2px solid rgba(255,215,0,0.35);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.10);
+        background: #fff;
+    }
+
+    .order-name {
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: .15rem;
+        line-height: 1.25;
+    }
+
+    .order-meta {
+        color: #6c757d;
+        font-size: .95rem;
+    }
+
+    .money {
+        font-weight: 900;
+        color: var(--dark);
+        white-space: nowrap;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: .55rem 0;
+    }
+
+        .summary-row .label {
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .summary-row .value {
+            font-weight: 900;
+            color: var(--dark);
+            white-space: nowrap;
+        }
+
+    .summary-total {
+        margin-top: .75rem;
+        padding-top: .85rem;
+        border-top: 2px solid rgba(255,215,0,0.45);
+    }
+
+        .summary-total .value {
+            color: #198754;
+            font-size: 1.35rem;
+        }
+
+    .coupon-form {
+        margin-top: 1rem;
+        display: grid;
+        grid-template-columns: 1fr 110px;
+        gap: .6rem;
+        align-items: center;
+    }
+
+    .btn-coffee {
+        background: var(--primary);
+        border: none;
+        color: #fff;
+        font-weight: 800;
+        border-radius: 14px;
+        padding: .85rem 1rem;
+        transition: all .2s;
+        width: 100%;
+    }
+
+        .btn-coffee:hover {
+            background: var(--hover);
+            transform: translateY(-2px);
+        }
+
+    .btn-apply {
+        background: var(--accent);
+        border: none;
+        color: var(--dark);
+        font-weight: 900;
+        border-radius: 12px;
+        padding: .75rem 1rem;
+        transition: all .2s;
+        width: 100%;
+    }
+
+        .btn-apply:hover {
+            background: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+        }
+
+    .btn-remove-coupon {
+        display: inline-flex;
+        gap: .4rem;
+        align-items: center;
+        font-weight: 800;
+        color: #dc3545;
+        text-decoration: none;
+    }
+
+        .btn-remove-coupon:hover {
+            text-decoration: underline;
+            color: #c82333;
+        }
+
+    .muted-note {
+        color: #6c757d;
+        font-weight: 700;
+        font-size: .95rem;
+    }
+
+    @@media (max-width: 1100px) {
+        .checkout-wrap {
+            grid-template-columns: 1fr;
+        }
+
+        .order-items {
+            max-height: 260px;
+        }
+    }
+</style>
+
+<div class="checkout-wrap">
+
+    <!-- LEFT: Thông tin + Địa chỉ -->
+    <div class="card-box">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="card-title m-0">
+                <i class="fas fa-user-check"></i> Thanh toán
+            </h2>
+            <a href="@Url.Action("Index", "GioHang")"
+               class="text-decoration-none"
+               style="font-weight:700;color:var(--dark);">
+                <i class="fas fa-arrow-left me-1"></i> Quay lại giỏ hàng
+            </a>
+        </div>
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+
+        @using (Html.BeginForm("DatHang", "GioHang", FormMethod.Post, new { @class = "mt-3", id = "checkoutForm" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="card-title" style="border-bottom:0;margin-bottom:.5rem;padding-bottom:0;">
+                <i class="fas fa-id-card"></i> Thông tin người nhận
+            </div>
+
+            <div class="grid-2">
+                <div class="mb-3">
+                    <label class="form-label">Họ và tên *</label>
+                    <input name="hoten" class="form-control" value="@(user != null ? user.TenKH : "")" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Số điện thoại *</label>
+                    <input name="sdt" class="form-control" value="@(user != null ? user.DienThoai : "")" required />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email *</label>
+                <input name="email" type="email" class="form-control" value="@(user != null ? user.Email : "")" required />
+            </div>
+
+            <div class="address-title">
+                <i class="fas fa-map-marker-alt"></i> Địa chỉ giao hàng
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tỉnh / Thành phố *</label>
+                <select id="city" class="form-select" required>
+                    <option value="">-- Chọn Tỉnh/Thành phố --</option>
+
+                        <option value="Hà Nội">Hà Nội</option>
+                        <option value="Hồ Chí Minh">Hồ Chí Minh</option>
+                        <option value="Hải Phòng">Hải Phòng</option>
+                        <option value="Đà Nẵng">Đà Nẵng</option>
+                        <option value="Huế">Huế</option>
+                        <option value="Cần Thơ">Cần Thơ</option>
+                        <option value="Lai Châu">Lai Châu</option>
+                        <option value="Điện Biên">Điện Biên</option>
+                        <option value="Sơn La">Sơn La</option>
+                        <option value="Lạng Sơn">Lạng Sơn</option>
+                        <option value="Quảng Ninh">Quảng Ninh</option>
+                        <option value="Thanh Hóa">Thanh Hóa</option>
+                        <option value="Nghệ An">Nghệ An</option>
+                        <option value="Hà Tĩnh">Hà Tĩnh</option>
+                        <option value="Cao Bằng">Cao Bằng</option>
+
+                        <option value="Tuyên Quang">Tuyên Quang</option>
+                        <option value="Lào Cai">Lào Cai</option>
+                        <option value="Thái Nguyên">Thái Nguyên</option>
+                        <option value="Phú Thọ">Phú Thọ</option>
+                        <option value="Bắc Ninh">Bắc Ninh</option>
+                        <option value="Hưng Yên">Hưng Yên</option>
+                        <option value="Ninh Bình">Ninh Bình</option>
+                        <option value="Quảng Trị">Quảng Trị</option>
+                        <option value="Quảng Ngãi">Quảng Ngãi</option>
+                        <option value="Gia Lai">Gia Lai</option>
+                        <option value="Khánh Hòa">Khánh Hòa</option>
+                        <option value="Lâm Đồng">Lâm Đồng</option>
+                        <option value="Đắk Lắk">Đắk Lắk</option>
+                        <option value="Đồng Nai">Đồng Nai</option>
+                        <option value="Tây Ninh">Tây Ninh</option>
+                        <option value="Vĩnh Long">Vĩnh Long</option>
+                        <option value="Đồng Tháp">Đồng Tháp</option>
+                        <option value="An Giang">An Giang</option>
+                        <option value="Cà Mau">Cà Mau</option>
+                </select>
+                <div class="muted-note mt-2">
+                    Phí vận chuyển tự động: đơn từ 120.000đ sẽ miễn phí.
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="mb-3">
+                    <label class="form-label">Quận / Huyện *</label>
+                    <input id="district" class="form-control" placeholder="Nhập Quận/Huyện..." required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Phường / Xã *</label>
+                    <input id="ward" class="form-control" placeholder="Nhập Phường/Xã..." required />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Số nhà, Tên đường cụ thể *</label>
+                <input id="street"
+                       class="form-control"
+                       placeholder="Ví dụ: 140 Lê Trọng Tấn"
+                       value="@(user != null ? user.DiaChi : "")"
+                       required />
+            </div>
+
+            @* Controller nhận diachi (string) -> ghép từ 4 field *@
+            <input type="hidden" name="diachi" id="diachiHidden" />
+
+            <div class="mb-3">
+                <label class="form-label">Ghi chú</label>
+                <textarea name="ghichu" class="form-control" rows="3" placeholder="Ví dụ: giao giờ hành chính, gọi trước khi giao..."></textarea>
+            </div>
+
+            @* ĐÃ CẮT PHƯƠNG THỨC THANH TOÁN + NÚT ĐẶT HÀNG SANG BÊN PHẢI *@
+        }
+    </div>
+
+    <!-- RIGHT: Đơn hàng + Payment + Đặt hàng -->
+    <div class="card-box">
+        <h3 class="card-title">
+            <i class="fas fa-receipt"></i> Đơn hàng của bạn
+            <span class="ms-2" style="font-size:.95rem;color:#6c757d;font-weight:700;">
+                (@cart.Count sản phẩm)
+            </span>
+        </h3>
+
+        @if (!cart.Any())
+        {
+            <div class="alert alert-warning m-0">Không có sản phẩm trong giỏ.</div>
+        }
+        else
+        {
+            <div class="order-items">
+                @foreach (var item in cart)
+                {
+                    <div class="order-item">
+                        <img class="order-thumb" src="~/Content/Images/Products/@item.HinhAnh" alt="@item.TenSP" />
+                        <div>
+                            <div class="order-name">@item.TenSP</div>
+                            <div class="order-meta">Số lượng: @item.SoLuong</div>
+                        </div>
+                        <div class="money">@String.Format("{0:#,##0}", item.ThanhTien)đ</div>
+                    </div>
+                }
+            </div>
+
+            <div class="mt-3">
+                <div class="summary-row">
+                    <span class="label">Tạm tính</span>
+                    <span class="value">@String.Format("{0:#,##0}", subTotal)đ</span>
+                </div>
+
+                <div class="summary-row">
+                    <span class="label">Phí vận chuyển</span>
+                    <span class="value">@shippingText</span>
+                </div>
+
+                <div class="summary-row">
+                    <span class="label">Giảm giá</span>
+                    <span class="value text-danger">-@String.Format("{0:#,##0}", discount)đ</span>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(couponCode))
+                {
+                    <div class="d-flex justify-content-between align-items-center mt-1">
+                        <div style="color:#6c757d;font-weight:700;">
+                            Mã: <b>@couponCode</b>
+                        </div>
+                        <a class="btn-remove-coupon" href="@Url.Action("RemoveCoupon", "GioHang")">
+                            <i class="fas fa-times-circle"></i> Gỡ mã
+                        </a>
+                    </div>
+                }
+
+                <div class="summary-row summary-total">
+                    <span class="label" style="font-size:1.05rem;color:var(--dark);font-weight:900;">Tổng cộng</span>
+                    <span class="value">@String.Format("{0:#,##0}", grandTotal)đ</span>
+                </div>
+
+                @using (Html.BeginForm("ApplyCoupon", "GioHang", FormMethod.Post, new { @class = "coupon-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input name="couponCode"
+                           class="form-control"
+                           placeholder="Mã ưu đãi (SALE10 / SALE25)"
+                           value="@couponCode" />
+                    <button type="submit" class="btn-apply">Áp dụng</button>
+                }
+
+                <hr class="my-3" />
+
+                <div class="mb-3">
+                    <label class="form-label">Phương thức thanh toán *</label>
+                    <select name="phuongthuc" class="form-select" form="checkoutForm">
+                        <option value="1">Tiền mặt (COD)</option>
+                        <option value="2">Chuyển khoản Ngân hàng (MBBank)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-coffee" form="checkoutForm">
+                    <i class="fas fa-check-circle me-1"></i> Đặt hàng ngay
+                </button>
+
+                <div class="mt-3" style="text-align:center;color:#6c757d;font-weight:700;">
+                    <i class="fas fa-lock me-1"></i> Bảo mật thanh toán
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        (function () {
+            function val(id) {
+                var el = document.getElementById(id);
+                return el ? (el.value || "").trim() : "";
+            }
+
+            function buildAddress() {
+                var street = val("street");
+                var ward = val("ward");
+                var district = val("district");
+                var city = val("city");
+
+                var parts = [];
+                if (street) parts.push(street);
+                if (ward) parts.push(ward);
+                if (district) parts.push(district);
+                if (city) parts.push(city);
+
+                var full = parts.join(", ");
+                var hidden = document.getElementById("diachiHidden");
+                if (hidden) hidden.value = full;
+            }
+
+            ["street", "ward", "district", "city"].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (!el) return;
+                el.addEventListener("input", buildAddress);
+                el.addEventListener("change", buildAddress);
+            });
+
+            var form = document.getElementById("checkoutForm");
+            if (form) {
+                form.addEventListener("submit", function () {
+                    buildAddress();
+                });
+            }
+
+            buildAddress();
+        })();
+    </script>
+}

@@ -1,0 +1,114 @@
+﻿@model DOAN_QUANCAFE.tblHoaDon
+
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Views/Shared/_LayOutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">Chi Tiết Đơn Hàng #@Model.MaHD</h2>
+        <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Quay lại
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold text-secondary">Thông tin đơn hàng</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <small class="text-muted d-block">Khách hàng:</small>
+                            <span class="fw-bold">@(Model.tblKhachHang != null ? Model.tblKhachHang.TenKH : "Vãng lai")</span>
+                        </li>
+                        <li class="list-group-item">
+                            <small class="text-muted d-block">Ngày đặt:</small>
+                            <span class="fw-bold">@String.Format("{0:dd/MM/yyyy HH:mm}", Model.NgayLap)</span>
+                        </li>
+                        <li class="list-group-item">
+                            <small class="text-muted d-block">Địa chỉ giao:</small>
+                            <span>@(Model.DiaChiGiaoHang ?? "Tại quán")</span>
+                        </li>
+                        <li class="list-group-item">
+                            <small class="text-muted d-block">Trạng thái:</small>
+                            <span class="badge bg-primary">@(Model.tblTinhTrang != null ? Model.tblTinhTrang.TinhTrangHoaDon : "-")</span>
+                        </li>
+                        <li class="list-group-item">
+                            <small class="text-muted d-block">Thanh toán:</small>
+                            @if (Model.DaThanhToan == true)
+                            {
+                                <span class="text-success fw-bold"><i class="bi bi-check-circle"></i> Đã thanh toán</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger fw-bold"><i class="bi bi-x-circle"></i> Chưa thanh toán</span>
+                            }
+                        </li>
+                    </ul>
+                    <div class="mt-3 d-grid">
+                        <a href="@Url.Action("Edit", new { id = Model.MaHD })" class="btn btn-warning fw-bold text-dark">
+                            Cập nhật trạng thái
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold text-secondary">Danh sách sản phẩm</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4">Sản phẩm</th>
+                                    <th class="text-center">Số lượng</th>
+                                    <th class="text-end">Đơn giá</th>
+                                    <th class="text-end pe-4">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.tblChiTietHoaDons)
+                                {
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="d-flex align-items-center">
+                                                <img src="~/Content/Images/Products/@(item.tblSanPham.HinhAnh ?? "placeholder.jpg")"
+                                                     style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px; margin-right: 10px;"
+                                                     onerror="this.src='/Content/Images/Products/placeholder.jpg'" />
+                                                <div>
+                                                    <div class="fw-bold">@item.tblSanPham.TenSP</div>
+                                                    <small class="text-muted">@item.tblSanPham.KichThuoc</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">x @item.SoLuong</td>
+                                        <td class="text-end">@String.Format("{0:N0}", item.GiaBan)</td>
+                                        <td class="text-end fw-bold pe-4">
+                                            @String.Format("{0:N0}", item.SoLuong * item.GiaBan) đ
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot class="bg-light">
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold pt-3">TỔNG TIỀN:</td>
+                                    <td class="text-end fw-bold text-danger fs-5 pt-3 pe-4">
+                                        @String.Format("{0:N0}", Model.TongTien) đ
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

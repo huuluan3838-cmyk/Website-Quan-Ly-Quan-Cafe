@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "Thống kê tổng quan";
+    Layout = "~/Views/Shared/_LayOutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="text-primary fw-bold">Dashboard</h2>
+            <p class="text-muted">Tổng quan tình hình kinh doanh của quán.</p>
+        </div>
+        <button class="btn btn-outline-secondary btn-sm" onclick="location.reload()">
+            <i class="bi bi-arrow-clockwise"></i> Cập nhật dữ liệu
+        </button>
+    </div>
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100 border-start border-4 border-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 fw-bold text-uppercase small">Doanh thu</p>
+                            <h3 class="fw-bold text-success">@String.Format("{0:N0}", ViewBag.TongDoanhThu) đ</h3>
+                        </div>
+                        <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success">
+                            <i class="bi bi-cash-coin fs-3"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100 border-start border-4 border-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 fw-bold text-uppercase small">Đơn hàng</p>
+                            <h3 class="fw-bold text-warning text-dark">@ViewBag.SoLuongDonHang</h3>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 p-3 rounded-circle text-warning">
+                            <i class="bi bi-receipt fs-3"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100 border-start border-4 border-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 fw-bold text-uppercase small">Sản phẩm</p>
+                            <h3 class="fw-bold text-primary">@ViewBag.SoLuongSanPham</h3>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 p-3 rounded-circle text-primary">
+                            <i class="bi bi-cup-hot-fill fs-3"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100 border-start border-4 border-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 fw-bold text-uppercase small">Khách hàng</p>
+                            <h3 class="fw-bold text-info text-dark">@ViewBag.SoLuongNguoiDung</h3>
+                        </div>
+                        <div class="bg-info bg-opacity-10 p-3 rounded-circle text-info">
+                            <i class="bi bi-people-fill fs-3"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3">
+                    <h6 class="mb-0 fw-bold">Hoạt động gần đây</h6>
+                </div>
+                <div class="card-body text-center py-5">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2316/2316093.png" width="100" class="opacity-25 mb-3" />
+                    <p class="text-muted">Chưa có hoạt động nào được ghi nhận.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3">
+                    <h6 class="mb-0 fw-bold">Lối tắt</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="@Url.Action("Index", "SanPhams")" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        Quản lý Sản phẩm
+                        <i class="bi bi-chevron-right small"></i>
+                    </a>
+                    <a href="@Url.Action("Index","DonHangs")" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        Quản lý Đơn hàng
+                        <i class="bi bi-chevron-right small"></i>
+                    </a>
+                    <a href="@Url.Action("Index","KhachHangs")" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        Quản lý Khách hàng
+                        <i class="bi bi-chevron-right small"></i>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,141 @@
+﻿@model List<tblSanPham>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayOutHome.cshtml";
+}
+<style>
+    .intro-banner {
+        width: 100%;
+        padding: 40px 0;
+        background:#ede0e0;
+    }
+
+    .intro-container {
+        width: 90%;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 40px;
+    }
+
+
+    .intro-left {
+        flex: 1;
+    }
+
+        .intro-left h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .intro-left p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+    /* Nút */
+    .intro-btn {
+        padding: 12px 25px;
+        background: #c49b63;
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: 0.3s;
+    }
+
+        .intro-btn:hover {
+            background: #a57a4c;
+        }
+
+    
+    .intro-right {
+        flex: 1;
+    }
+
+    .banner-image {
+        width: 100%;
+        height: 350px; 
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+</style>
+
+<div class="main-banner">
+    <img src="~/Content/Images/Banner/banner.jpeg"
+         alt="Cafe Banner" class="banner-image">
+    <div class="banner-overlay">
+        <div class="banner-content">
+            <h1>Chào Mừng Đến CafeHouse</h1>
+            <p>Thưởng thức hương vị cà phê tuyệt hảo mỗi ngày</p>
+            <a href="@Url.Action("Index","TrangChu")" class="banner-btn">Khám Phá Menu</a>
+        </div>
+    </div>
+</div>
+
+
+<div class="announcement">
+    <div class="container">
+        <h2>🎉Mới lạ – Thưởng thức – Say mê</h2>
+        <p>Khám phá những hương vị độc đáo và đặc biệt nhất!</p>
+    </div>
+</div>
+
+<!-- INTRO BANNER -->
+<div class="intro-banner mt-3"> 
+    <div class="intro-container">
+
+     
+        <div class="intro-left">
+            <h2>☕ Hương Vị Tạo Nên Đẳng Cấp</h2>
+            <p>
+                Café hảo hạng với hương thơm đậm đà từ những hạt cà phê Arabica
+                và Robusta chọn lọc. Trải nghiệm phong cách thưởng thức cà phê sang trọng.
+            </p>
+
+            <a href="@Url.Action("Index","GioiThieu")" class="intro-btn">
+                Xem Thêm
+            </a>
+        </div>
+
+       
+        <div class="intro-right">
+            <img src="~/Content/Images/Banner/banner2.jpg"
+                 alt="Cafe Banner" class="banner-image">
+        </div>
+
+    </div>
+</div>
+
+
+
+<!-- PRODUCTS SECTION -->
+<section class="products-section" id="products">
+    <h2 class="section-title">Sản Phẩm Nổi Bật</h2>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+                <article class="product-card">
+                    <a href="@Url.Action("ChiTietSP","TrangChu", new { masp = item.MaSP })" style="text-decoration:none">
+                        <div class="thumb">
+                            <img src="~/Content/Images/Products/@item.HinhAnh" alt="@item.TenSP" />
+                        </div>
+                        <h4 class="title">@item.TenSP</h4>
+                        <p class="price">
+                            <span class="new-price">@String.Format("{0:#,##0}", item.GiaBan) VNĐ</span>
+                        </p>
+                    </a>
+                    <button class="btn" onclick="location.href='@Url.Action("AddToCart", "GioHang", new { masp = item.MaSP })'">
+                        <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                    </button>
+                </article>
+            </div>
+        }
+    </div>
+
+</section>

@@ -1,0 +1,234 @@
+﻿@model DOAN_QUANCAFE.tblKhachHang
+@{
+    ViewBag.Title = "Thông tin tài khoản";
+    Layout = "~/Views/Shared/_LayOutHome.cshtml";
+}
+
+<style>
+    .pf-wrap {
+        max-width: 1100px;
+    }
+
+    .pf-hero {
+        background: linear-gradient(135deg, rgba(111,78,55,.12) 0%, rgba(255,215,0,.10) 100%);
+        border: 1px solid rgba(0,0,0,.08);
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    }
+
+    .pf-title {
+        margin: 0;
+        font-weight: 900;
+        letter-spacing: .3px;
+    }
+
+    .pf-sub {
+        margin: 6px 0 0;
+        color: #6c757d;
+        font-weight: 600;
+    }
+
+    .pf-card {
+        background: #fff;
+        border: 1px solid rgba(0,0,0,.08);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    }
+
+    .pf-left {
+        padding: 18px;
+        border-right: 1px solid rgba(0,0,0,.06);
+        background: rgba(248,249,250,.65);
+    }
+
+    .pf-avatar {
+        width: 190px;
+        height: 190px;
+        object-fit: cover;
+        border-radius: 999px;
+        border: 6px solid rgba(255,255,255,.95);
+        box-shadow: 0 16px 30px rgba(0,0,0,.12);
+        background: #fff;
+    }
+
+    .pf-name {
+        margin: 14px 0 0;
+        font-weight: 900;
+        letter-spacing: .2px;
+    }
+
+    .pf-badges {
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .pf-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-weight: 800;
+        font-size: 12px;
+        border: 1px solid rgba(0,0,0,.08);
+        background: #fff;
+        color: #212529;
+        white-space: nowrap;
+    }
+
+    .pf-right {
+        padding: 18px;
+    }
+
+    .pf-section-title {
+        font-weight: 900;
+        letter-spacing: .2px;
+        margin: 0 0 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(0,0,0,.08);
+    }
+
+    .pf-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .pf-item {
+        border: 1px solid rgba(0,0,0,.06);
+        border-radius: 14px;
+        padding: 12px 12px;
+        background: #fff;
+    }
+
+    .pf-k {
+        font-size: 12px;
+        color: #6c757d;
+        font-weight: 700;
+        margin-bottom: 3px;
+    }
+
+    .pf-v {
+        font-weight: 800;
+        color: #212529;
+    }
+
+        .pf-v.muted {
+            font-weight: 700;
+            color: #495057;
+        }
+
+    .pf-item.full {
+        grid-column: 1 / -1;
+    }
+
+    .btn-pill {
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-weight: 900;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    @@media (max-width: 992px) {
+        .pf-left {
+            border-right: 0;
+            border-bottom: 1px solid rgba(0,0,0,.06);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .pf-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .pf-item.full {
+            grid-column: auto;
+        }
+
+        .pf-avatar {
+            width: 160px;
+            height: 160px;
+        }
+    }
+</style>
+
+<section class="container mt-4 mb-5 pf-wrap">
+    <div class="pf-hero mb-3">
+        <h2 class="pf-title text-primary">THÔNG TIN TÀI KHOẢN</h2>
+        <div class="pf-sub">Hồ sơ cá nhân và thông tin liên hệ</div>
+    </div>
+
+    <div class="pf-card">
+        <div class="row g-0">
+            <div class="col-lg-4 pf-left text-center">
+                <img src="~/Content/Images/avt/@(Model.Avarta ?? "default-user.jpg")"
+                     alt="@Model.TenKH"
+                     class="pf-avatar" />
+
+                <h4 class="pf-name text-primary">@Model.TenKH</h4>
+
+                <div class="pf-badges">
+                    @if (!string.IsNullOrWhiteSpace(Model.GioiTinh))
+                    {
+                        <span class="pf-chip"><i class="fas fa-venus-mars"></i> @Model.GioiTinh</span>
+                    }
+                    @if (Model.NamSinh.HasValue)
+                    {
+                        <span class="pf-chip"><i class="fas fa-birthday-cake"></i> @Model.NamSinh</span>
+                    }
+                </div>
+
+                <div class="mt-3">
+                    <a href="@Url.Action("EditProfile", "KhachHangs")" class="btn btn-warning btn-pill">
+                        <i class="fas fa-edit"></i> Chỉnh sửa thông tin
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-8 pf-right">
+                <h4 class="pf-section-title text-dark">
+                    <i class="fas fa-user-circle me-2"></i>Thông tin cá nhân
+                </h4>
+
+                <div class="pf-grid">
+                    <div class="pf-item">
+                        <div class="pf-k">Họ và tên</div>
+                        <div class="pf-v">@Model.TenKH</div>
+                    </div>
+
+                    <div class="pf-item">
+                        <div class="pf-k">Giới tính</div>
+                        <div class="pf-v muted">@Model.GioiTinh</div>
+                    </div>
+
+                    <div class="pf-item">
+                        <div class="pf-k">Năm sinh</div>
+                        <div class="pf-v muted">@Model.NamSinh</div>
+                    </div>
+
+                    <div class="pf-item">
+                        <div class="pf-k">Điện thoại</div>
+                        <div class="pf-v muted">@Model.DienThoai</div>
+                    </div>
+
+                    <div class="pf-item">
+                        <div class="pf-k">Email</div>
+                        <div class="pf-v muted">@Model.Email</div>
+                    </div>
+
+                    <div class="pf-item full">
+                        <div class="pf-k">Địa chỉ</div>
+                        <div class="pf-v muted">@Model.DiaChi</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

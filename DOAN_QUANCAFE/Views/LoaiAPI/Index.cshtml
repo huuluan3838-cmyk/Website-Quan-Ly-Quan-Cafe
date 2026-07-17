@@ -1,0 +1,157 @@
+﻿@{
+    ViewBag.Title = "Quản lý Loại sản phẩm";
+    Layout = "~/Views/Shared/_LayOutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="text-primary fw-bold">Loại Sản Phẩm (API)</h2>
+            <p class="text-muted">Quản lý phân loại thực đơn bằng công nghệ AJAX không tải lại trang.</p>
+        </div>
+        <button onclick="openModal(0)" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-lg"></i> Thêm Loại Mới
+        </button>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle mb-0">
+                    <thead class="bg-light text-secondary">
+                        <tr>
+                            <th class="ps-4">Tên loại</th>
+                            <th>Ghi chú / Mô tả</th>
+                            <th class="text-center">Số lượng món</th>
+                            <th class="text-center" style="width: 150px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblData">
+                        <tr>
+                            <td colspan="4" class="text-center py-4">Đang tải dữ liệu...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="loaiModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalTitle">Tiêu đề</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="txtMaLoai" value="0" />
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Tên loại sản phẩm</label>
+                    <input type="text" id="txtTenLoai" class="form-control" placeholder="Ví dụ: Cà phê, Trà sữa..." />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Ghi chú</label>
+                    <textarea id="txtGhiChu" class="form-control" rows="3" placeholder="Mô tả ngắn về loại này..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary px-4" onclick="saveData()">Lưu dữ liệu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            loadData();
+        });
+
+        // 1. Tải danh sách từ API GetAll
+        function loadData() {
+            $.get("@Url.Action("GetAll", "LoaiAPI")", function (res) {
+                let html = '';
+                if (res.length === 0) {
+                    html = '<tr><td colspan="4" class="text-center py-4 text-muted">Chưa có loại sản phẩm nào.</td></tr>';
+                } else {
+                    res.forEach(item => {
+                        // Lưu ý: Các thuộc tính MaLoai, TenLoai, GhiChu, SoLuongMon phải khớp với JSON
+                        html += `<tr>
+                            <td class="ps-4 fw-bold text-primary">
+                                <i class="bi bi-tag-fill me-2 text-secondary"></i> ${item.TenLoai}
+                            </td>
+                            <td class="text-muted small">
+                                ${item.GhiChu ? item.GhiChu : "Không có ghi chú"}
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-secondary rounded-pill">${item.SoLuongMon} món</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <button onclick="openModal(${item.MaLoai})" class="btn btn-sm btn-outline-warning" title="Sửa">✏️</button>
+                                    <button onclick="deleteItem(${item.MaLoai})" class="btn btn-sm btn-outline-danger" title="Xóa">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                }
+                $('#tblData').html(html);
+            }).fail(function() {
+                $('#tblData').html('<tr><td colspan="4" class="text-center text-danger py-4">Lỗi: Không thể kết nối với API!</td></tr>');
+            });
+        }
+
+        // 2. Mở Modal Thêm/Sửa
+        function openModal(id) {
+            $('#txtMaLoai').val(id);
+            if (id === 0) {
+                $('#modalTitle').text("THÊM LOẠI SẢN PHẨM MỚI");
+                $('#txtTenLoai').val("");
+                $('#txtGhiChu').val("");
+                $('#loaiModal').modal('show');
+            } else {
+                $('#modalTitle').text("CẬP NHẬT LOẠI SẢN PHẨM");
+                $.get("@Url.Action("GetById", "LoaiAPI")", { id: id }, function (res) {
+                    $('#txtTenLoai').val(res.TenLoai);
+                    $('#txtGhiChu').val(res.GhiChu);
+                    $('#loaiModal').modal('show');
+                });
+            }
+        }
+
+        // 3. Lưu dữ liệu (API Save)
+        function saveData() {
+            let data = {
+                id: $('#txtMaLoai').val(),
+                tenLoai: $('#txtTenLoai').val(),
+                ghiChu: $('#txtGhiChu').val()
+            };
+
+            if (!data.tenLoai) { alert("Vui lòng nhập tên loại!"); return; }
+
+            $.post("@Url.Action("Save", "LoaiAPI")", data, function (res) {
+                if (res.success) {
+                    $('#loaiModal').modal('hide');
+                    loadData(); // Tải lại bảng ngay lập tức
+                } else {
+                    alert("Lỗi: " + res.message);
+                }
+            });
+        }
+
+        // 4. Xóa dữ liệu (API Delete)
+        function deleteItem(id) {
+            if (confirm("Bạn có chắc chắn muốn xóa loại sản phẩm này?")) {
+                $.post("@Url.Action("Delete", "LoaiAPI")", { id: id }, function (res) {
+                    if (res.success) {
+                        loadData();
+                    } else {
+                        alert(res.message);
+                    }
+                });
+            }
+        }
+    </script>
+}

@@ -1,0 +1,190 @@
+﻿@{
+    ViewBag.Title = "Liên hệ";
+    Layout = "~/Views/Shared/_LayOutHome.cshtml";
+    var kh = ViewBag.KhachHang as DOAN_QUANCAFE.tblKhachHang;
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success text-center mt-3">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger text-center mt-3">@TempData["Error"]</div>
+}
+
+<style>
+    .contact-wrapper {
+        padding: 3rem 1rem;
+        background: #FFF8E7;
+    }
+
+    .contact-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        justify-content: space-between;
+    }
+
+    .contact-form,
+    .contact-info {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 2rem;
+        flex: 1 1 480px;
+    }
+
+        .contact-form h3,
+        .contact-info h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #6F4E37;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+            .contact-form h3::after,
+            .contact-info h3::after {
+                content: '';
+                display: block;
+                width: 60px;
+                height: 4px;
+                background: #FFD700;
+                border-radius: 2px;
+                margin-top: 0.5rem;
+            }
+
+        .contact-form .form-control {
+            border: 2px solid #FFD700;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            transition: border 0.3s;
+        }
+
+            .contact-form .form-control:focus {
+                border-color: #6F4E37;
+                box-shadow: 0 0 0 0.15rem rgba(111, 78, 55, 0.25);
+            }
+
+    .btn-submit {
+        background: #6F4E37;
+        color: #fff;
+        padding: 0.7rem 1.8rem;
+        border: none;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+        .btn-submit:hover {
+            background: #5A402C;
+            transform: translateY(-2px);
+        }
+
+    .contact-info p {
+        margin-bottom: 1rem;
+        color: #333;
+    }
+
+    .contact-info i {
+        color: #FFD700;
+        margin-right: 8px;
+        width: 20px;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .social-icons a {
+        font-size: 1.5rem;
+        margin-right: 1rem;
+        color: #6F4E37;
+        transition: all 0.3s;
+    }
+
+        .social-icons a:hover {
+            color: #FFD700;
+            transform: scale(1.1);
+        }
+
+    .zalo-icon {
+        height: 28px;
+        vertical-align: middle;
+        margin-top: -4px;
+    }
+
+    .contact-map {
+        margin-top: 3rem;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    @@media (max-width: 768px) {
+        .contact-container {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="contact-wrapper">
+    <div class="contact-container">
+        <!-- Form liên hệ -->
+        <div class="contact-form">
+            <h3>Gửi lời nhắn</h3>
+            <form method="post" action="@Url.Action("SendContact", "LienHe")">
+                @Html.AntiForgeryToken()
+
+                @if (kh != null)
+                {
+                    <input type="text"
+                           class="form-control"
+                           value="@kh.TenKH"
+                           readonly />
+
+                    <input type="text"
+                           class="form-control"
+                           value="@(kh.Email ?? kh.DienThoai)"
+                           readonly />
+
+                    <textarea name="Message"
+                              rows="5"
+                              class="form-control"
+                              placeholder="Nội dung *"
+                              required></textarea>
+
+                    <button type="submit" class="btn-submit">Gửi liên hệ</button>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        Vui lòng <a href="@Url.Action("Login","Account")">đăng nhập</a> để gửi liên hệ.
+                    </div>
+                }
+            </form>
+
+        </div>
+
+        <!-- Thông tin liên hệ -->
+        <div class="contact-info">
+            <h3>Thông tin liên hệ</h3>
+            <p><i class="fas fa-map-marker-alt"></i> CafeHouse - 123 Nguyễn Huệ, P.Bến Nghé, Q.1, TP.HCM</p>
+            <p><i class="fas fa-phone"></i> <a href="tel:0909123456" style="text-decoration: none;">0909 123 456</a></p>
+            <p>
+                <i class="fas fa-envelope"></i> <a href="mailto:info@cafehouse.vn" style="text-decoration: none;">
+                    info@cafehouse.vn
+                </a>
+            </p>
+            <p><i class="fas fa-clock"></i> 7:00 - 22:00 (Thứ 2 - Chủ nhật)</p>
+            <p><strong>Kết nối với chúng tôi:</strong></p>
+            <div class="social-icons">
+                <a href="https://facebook.com/cafehouse" target="_blank"><i class="fab fa-facebook"></i></a>
+                <a href="https://instagram.com/cafehouse" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://zalo.me/1234567890" target="_blank">
+                    <img src="~/Content/Images/Products/zalo.png" class="zalo-icon" alt="Zalo" />
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

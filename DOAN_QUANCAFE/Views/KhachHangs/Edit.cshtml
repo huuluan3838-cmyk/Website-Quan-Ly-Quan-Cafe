@@ -1,0 +1,256 @@
+﻿@model DOAN_QUANCAFE.tblKhachHang
+@{
+    ViewBag.Title = "Sửa thông tin khách hàng";
+    Layout = "~/Views/Shared/_LayOutAdmin.cshtml";
+}
+
+<style>
+    .ae-wrap {
+        max-width: 1300px;
+    }
+
+    .ae-hero {
+        background: linear-gradient(135deg, rgba(255,193,7,.16) 0%, rgba(111,78,55,.10) 100%);
+        border: 1px solid rgba(0,0,0,.10);
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    }
+
+    .ae-title {
+        margin: 0;
+        font-weight: 900;
+        letter-spacing: .3px;
+    }
+
+    .ae-sub {
+        margin: 6px 0 0;
+        color: #6c757d;
+        font-weight: 600;
+    }
+
+    .ae-card {
+        background: #fff;
+        border: 1px solid rgba(0,0,0,.10);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,.06);
+        height: 100%;
+    }
+
+    .ae-card-hd {
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(0,0,0,.06);
+        background: rgba(248,249,250,.85);
+        backdrop-filter: blur(6px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .ae-body {
+        padding: 16px;
+    }
+
+    .btn-pill {
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-weight: 900;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ae-avatar {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 999px;
+        border: 6px solid rgba(255,255,255,.95);
+        box-shadow: 0 16px 30px rgba(0,0,0,.12);
+        background: #fff;
+    }
+
+    .ae-edit-dot {
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        border: 3px solid #fff;
+        box-shadow: 0 10px 18px rgba(0,0,0,.10);
+    }
+
+    .ae-label {
+        font-weight: 900;
+    }
+
+    .ae-input .form-control,
+    .ae-input .form-select,
+    .ae-input textarea {
+        border-radius: 14px;
+        padding: 10px 12px;
+    }
+
+    .ae-note {
+        border: 1px solid rgba(13,110,253,.18);
+        background: rgba(13,110,253,.08);
+        border-radius: 14px;
+        padding: 12px;
+        color: #0a58ca;
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+    @@media (max-width: 992px) {
+        .ae-avatar {
+            width: 150px;
+            height: 150px;
+        }
+    }
+</style>
+
+<div class="container-fluid ae-wrap mt-3 mb-4">
+    <div class="ae-hero mb-3">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <div>
+                <h2 class="ae-title text-dark">CẬP NHẬT HỒ SƠ KHÁCH HÀNG</h2>
+                <div class="ae-sub">Chỉnh sửa thông tin cá nhân và ảnh đại diện</div>
+            </div>
+            <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-pill">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Edit", "KhachHangs", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.MaKH)
+        @Html.HiddenFor(m => m.Avarta)
+
+        <div class="row g-3">
+            <!-- Avatar -->
+            <div class="col-lg-4">
+                <div class="ae-card">
+                    <div class="ae-card-hd">
+                        <div class="fw-bold text-dark"><i class="bi bi-image me-2"></i>Ảnh đại diện</div>
+                    </div>
+
+                    <div class="ae-body text-center">
+                        <div class="position-relative d-inline-block mb-2">
+                            <img id="imgPreview"
+                                 src="~/Content/Images/avt/@(Model.Avarta ?? "default-user.jpg")"
+                                 class="ae-avatar"
+                                 alt="@Model.TenKH"
+                                 onerror="this.onerror=null;this.src='/Content/Images/avt/default-user.jpg';" />
+
+                            <span class="position-absolute bottom-0 end-0 bg-warning ae-edit-dot">
+                                <i class="bi bi-pencil-fill text-dark small"></i>
+                            </span>
+                        </div>
+
+                        <div class="text-muted fw-semibold small mb-3">Chọn ảnh mới để xem trước</div>
+
+                        <label for="uploadHinh" class="btn btn-outline-warning btn-pill text-dark w-100 justify-content-center">
+                            <i class="bi bi-camera-fill"></i> Tải ảnh lên
+                        </label>
+                        <input type="file" name="uploadHinh" id="uploadHinh" accept="image/*" class="d-none" onchange="previewImage(this)" />
+                        @Html.ValidationMessageFor(m => m.Avarta, "", new { @class = "text-danger mt-2" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info -->
+            <div class="col-lg-8">
+                <div class="ae-card">
+                    <div class="ae-card-hd">
+                        <div class="fw-bold text-dark"><i class="bi bi-person-lines-fill me-2"></i>Thông tin cá nhân</div>
+                    </div>
+
+                    <div class="ae-body ae-input">
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger mb-3" })
+
+                        <div class="mb-3">
+                            <label class="form-label ae-label">Họ và tên <span class="text-danger">*</span></label>
+                            @Html.TextBoxFor(m => m.TenKH, new { @class = "form-control form-control-lg fw-bold text-primary", required = "required", placeholder = "Nhập họ và tên" })
+                            @Html.ValidationMessageFor(m => m.TenKH, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label ae-label">Số điện thoại</label>
+                                @Html.TextBoxFor(m => m.DienThoai, new { @class = "form-control", placeholder = "Nhập số điện thoại" })
+                                @Html.ValidationMessageFor(m => m.DienThoai, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label ae-label">Email</label>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "example@gmail.com" })
+                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label ae-label">Giới tính</label>
+                                @Html.DropDownListFor(m => m.GioiTinh,
+                                    new List<SelectListItem> {
+                                        new SelectListItem { Text = "Nam", Value = "Nam" },
+                                        new SelectListItem { Text = "Nữ", Value = "Nữ" },
+                                        new SelectListItem { Text = "Khác", Value = "Khác" }
+                                    },
+                                    "Chọn giới tính",
+                                    new { @class = "form-select" })
+                                @Html.ValidationMessageFor(m => m.GioiTinh, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label ae-label">Năm sinh</label>
+                                @Html.TextBoxFor(m => m.NamSinh, new { @class = "form-control", type = "number", min = "1900", max = "2100", placeholder = "VD: 2003" })
+                                @Html.ValidationMessageFor(m => m.NamSinh, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label class="form-label ae-label">Mật khẩu đăng nhập</label>
+                            @Html.TextBoxFor(m => m.MatKhau, new { @class = "form-control bg-light", type = "text" })
+                            <div class="ae-note mt-2">
+                                Chỉ sửa khi khách hàng yêu cầu reset mật khẩu.
+                            </div>
+                            @Html.ValidationMessageFor(m => m.MatKhau, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mt-3">
+                            <label class="form-label ae-label">Địa chỉ</label>
+                            @Html.TextAreaFor(m => m.DiaChi, new { @class = "form-control", rows = "2", placeholder = "Nhập địa chỉ" })
+                            @Html.ValidationMessageFor(m => m.DiaChi, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 flex-wrap border-top pt-3 mt-4">
+                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-pill">
+                                <i class="bi bi-x-circle"></i> Hủy bỏ
+                            </a>
+                            <button type="submit" class="btn btn-warning btn-pill text-dark">
+                                <i class="bi bi-check-circle-fill"></i> Lưu thay đổi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    function previewImage(input) {
+        const img = document.getElementById('imgPreview');
+        if (!img || !input.files || !input.files[0]) return;
+
+        const f = input.files[0];
+        if (!f.type || !f.type.startsWith('image/')) return;
+
+        img.src = URL.createObjectURL(f);
+    }
+</script>

@@ -1,0 +1,7 @@
+﻿@model List<tblLoaiSanPham>
+<ul class="category-list">
+    @foreach (var item in Model)
+    {
+        <li><a href="@Url.Action("LocSP", "TrangChu", new { idloc = item.MaLoai, type = 1 })">@item.TenLoai</a></li>
+    }
+</ul>

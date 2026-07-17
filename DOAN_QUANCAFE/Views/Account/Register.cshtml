@@ -1,0 +1,90 @@
+﻿@model DOAN_QUANCAFE.tblKhachHang
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Đăng ký thành viên</title>
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .register-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+            border-top: 5px solid #6B4423;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-card">
+        <h3 class="text-center mb-4" style="color: #6B4423; font-weight: bold;">ĐĂNG KÝ THÀNH VIÊN</h3>
+
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="fw-bold">Họ và tên (*)</label>
+                    @Html.TextBoxFor(m => m.TenKH, new { @class = "form-control", placeholder = "Ví dụ: Nguyễn Văn A", required = "required" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold">Số điện thoại (*)</label>
+                    @Html.TextBoxFor(m => m.DienThoai, new { @class = "form-control", placeholder = "Dùng để đăng nhập", required = "required" })
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold">Mật khẩu (*)</label>
+                    @Html.PasswordFor(m => m.MatKhau, new { @class = "form-control", placeholder = "••••••", required = "required" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold">Năm sinh</label>
+                    @Html.TextBoxFor(m => m.NamSinh, new { @class = "form-control", type = "number" })
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold">Giới tính</label>
+                    <select name="GioiTinh" class="form-select">
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="fw-bold">Email</label>
+                @Html.TextAreaFor(m => m.Email, new { @class = "form-control", rows = "2" ,type="Email"})
+            </div>
+
+            <div class="mb-3">
+                <label class="fw-bold">Địa chỉ</label>
+                @Html.TextAreaFor(m => m.DiaChi, new { @class = "form-control", rows = "2" })
+            </div>
+
+            <button type="submit" class="btn btn-warning w-100 fw-bold mt-2" style="background: #FFD700; border: none;">XÁC NHẬN ĐĂNG KÝ</button>
+
+            <div class="text-center mt-3">
+                <a href="@Url.Action("Login", "Account", new { returnUrl = ViewBag.ReturnUrl })" class="text-decoration-none text-muted">← Quay lại Đăng nhập</a>
+            </div>
+        }
+    </div>
+</body>
+</html>
