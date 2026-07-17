@@ -3,7 +3,7 @@
 ## Giới thiệu dự án
 Dự án được xây dựng nhằm cung cấp giải pháp quản lý toàn diện cho các quán cà phê, từ việc hiển thị thực đơn, gọi món trực tuyến cho khách hàng, đến các tính năng quản trị hệ thống, phân quyền dành cho admin và nhân viên.
 
-## 🛠 Công nghệ sử dụng
+##Công nghệ sử dụng
 - **Nền tảng & Ngôn ngữ:** C# / .NET Framework 4.8 / ASP.NET MVC
 - **Giao diện (Frontend):** HTML5, CSS3, Bootstrap 5, jQuery
 - **Cơ sở dữ liệu (Database):** SQL Server, Entity Framework (EDMX)
