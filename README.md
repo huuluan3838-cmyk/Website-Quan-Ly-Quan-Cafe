@@ -19,7 +19,7 @@ Dự án được xây dựng nhằm cung cấp giải pháp quản lý toàn di
 - **Thanh toán trực tuyến:** Tích hợp cổng thanh toán điện tử MoMo.
 - Gửi thông tin liên hệ và bình luận góp ý về sản phẩm.
 
-### 💼 Dành cho Admin & Nhân viên (Trang Quản trị)
+### Dành cho Admin & Nhân viên (Trang Quản trị)
 - **Phân quyền hệ thống:** Cơ chế kiểm soát quyền truy cập dành riêng cho Admin và Nhân viên (tblPhanQuyen).
 - **Quản lý danh mục & sản phẩm:** Thêm, xóa, sửa thông tin món ăn, hình ảnh và nhà cung cấp.
 - **Quản lý đơn hàng:** Tiếp nhận, xử lý và cập nhật trạng thái các đơn đặt hàng từ khách.
